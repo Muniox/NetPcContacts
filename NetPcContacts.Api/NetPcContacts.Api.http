@@ -1,0 +1,6 @@
+@NetPcContacts.Api_HostAddress = http://localhost:5244
+
+GET {{NetPcContacts.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,44 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetPcContacts.Api", "NetPcContacts.Api\NetPcContacts.Api.csproj", "{D846B645-B965-415B-9A59-F34E30D4754E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetPcContacts.Domain", "NetPcContacts.Domain\NetPcContacts.Domain.csproj", "{E18DA70A-DECE-428E-8BA1-15959981787A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetPcContacts.Infrastructure", "NetPcContacts.Infrastructure\NetPcContacts.Infrastructure.csproj", "{B77514D8-B9C1-4780-A759-F13EAE5A266B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetPcContacts.Application", "NetPcContacts.Application\NetPcContacts.Application.csproj", "{34BF0F7A-DAA2-41A3-A8D0-12F8D89E1804}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{1C985B57-285A-4FDA-B19C-E8A50FFFAED5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D93AFF5C-E3C9-4703-A7D5-0A62604AA4C1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D846B645-B965-415B-9A59-F34E30D4754E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D846B645-B965-415B-9A59-F34E30D4754E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D846B645-B965-415B-9A59-F34E30D4754E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D846B645-B965-415B-9A59-F34E30D4754E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E18DA70A-DECE-428E-8BA1-15959981787A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E18DA70A-DECE-428E-8BA1-15959981787A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E18DA70A-DECE-428E-8BA1-15959981787A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E18DA70A-DECE-428E-8BA1-15959981787A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B77514D8-B9C1-4780-A759-F13EAE5A266B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B77514D8-B9C1-4780-A759-F13EAE5A266B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B77514D8-B9C1-4780-A759-F13EAE5A266B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B77514D8-B9C1-4780-A759-F13EAE5A266B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34BF0F7A-DAA2-41A3-A8D0-12F8D89E1804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34BF0F7A-DAA2-41A3-A8D0-12F8D89E1804}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34BF0F7A-DAA2-41A3-A8D0-12F8D89E1804}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34BF0F7A-DAA2-41A3-A8D0-12F8D89E1804}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B77514D8-B9C1-4780-A759-F13EAE5A266B} = {D93AFF5C-E3C9-4703-A7D5-0A62604AA4C1}
+		{E18DA70A-DECE-428E-8BA1-15959981787A} = {D93AFF5C-E3C9-4703-A7D5-0A62604AA4C1}
+		{34BF0F7A-DAA2-41A3-A8D0-12F8D89E1804} = {D93AFF5C-E3C9-4703-A7D5-0A62604AA4C1}
+		{D846B645-B965-415B-9A59-F34E30D4754E} = {D93AFF5C-E3C9-4703-A7D5-0A62604AA4C1}
+	EndGlobalSection
+EndGlobal
