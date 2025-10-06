@@ -9,21 +9,52 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f0d0fa75-9522-4ee5-80b4-1aa622b2765f" name="Changes" comment="" />
+    <list default="true" id="f0d0fa75-9522-4ee5-80b4-1aa622b2765f" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/NetPcContacts.Application/Extensions/ServiceCollectionExtension.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/NetPcContacts.Infrastructure/Extensions/ServiceCollectionExtensions.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/NetPcContacts.Infrastructure/Persistence/NetPcContactsDbContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.NetPcContacts/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.NetPcContacts/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetPcContacts.Api/Controllers/WeatherForecastController.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetPcContacts.Api/NetPcContacts.Api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/NetPcContacts.Api/NetPcContacts.Api.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetPcContacts.Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/NetPcContacts.Api/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetPcContacts.Api/WeatherForecast.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetPcContacts.Api/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/NetPcContacts.Api/appsettings.Development.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetPcContacts.Application/NetPcContacts.Application.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/NetPcContacts.Application/NetPcContacts.Application.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetPcContacts.Infrastructure/NetPcContacts.Infrastructure.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/NetPcContacts.Infrastructure/NetPcContacts.Infrastructure.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetPcContacts.sln" beforeDir="false" afterPath="$PROJECT_DIR$/NetPcContacts.sln" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="DpaMonitoringSettings">
+    <option name="firstShow" value="false" />
+  </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="develop" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/NetPcContacts.Application/Class1.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/NetPcContacts.Domain/Class1.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/NetPcContacts.Infrastructure/Class1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/NetPcContacts.Api.Tests/UnitTest1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Muniox/RiderProjects/NetPcContacts/NetPcContacts.Api/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Muniox/RiderProjects/NetPcContacts/NetPcContacts.Api/appsettings.Development.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/NetPcContacts.Application.Tests/UnitTest1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/NetPcContacts.Application/Extensions/ServiceCollectionExtension.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/NetPcContacts.Infrastructure.Tests/UnitTest1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/NetPcContacts.Infrastructure/Extensions/ServiceCollectionExtensions.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/NetPcContacts.Infrastructure/Persistence/NetPcContactsDbContext.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/global.json" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="Toolset" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 0
 }</component>
@@ -32,20 +63,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.NetPcContacts.Api: IIS Express.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "sql-lite-database",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "sqlite"
+    ],
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "SQLite"
+    ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Launch Settings Profile.NetPcContacts.Api: IIS Express">
     <configuration name="NetPcContacts.Api: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/NetPcContacts.Api/NetPcContacts.Api.csproj" />
@@ -104,8 +144,20 @@
       <option name="presentableId" value="Default" />
       <updated>1759766683121</updated>
       <workItem from="1759766684440" duration="6018000" />
-      <workItem from="1759777553094" duration="763000" />
+      <workItem from="1759777553094" duration="4700000" />
+      <workItem from="1759783566411" duration="1440000" />
+      <workItem from="1759785147357" duration="181000" />
+      <workItem from="1759785511013" duration="1856000" />
     </task>
+    <task id="LOCAL-00001" summary="Initialize base solution structure with ASP.NET Core API project and associated layers. Add WeatherForecast endpoint, Swagger setup, and .gitignore.">
+      <option name="closed" value="true" />
+      <created>1759778618224</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1759778618224</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -113,8 +165,33 @@
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="sql-lite-database" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Initialize base solution structure with ASP.NET Core API project and associated layers. Add WeatherForecast endpoint, Swagger setup, and .gitignore." />
+    <option name="LAST_COMMIT_MESSAGE" value="&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

@@ -1,3 +1,6 @@
+using NetPcContacts.Application.Extensions;
+using NetPcContacts.Infrastructure.Extensions;
+
 namespace NetPcContacts.Api;
 
 public class Program
@@ -13,6 +16,12 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        // Added Application Layer
+        builder.Services.AddApplication();
+        
+        // Added Infrastructure Layer
+        builder.Services.AddInfrastructure(builder.Configuration);
+        
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
@@ -23,6 +32,8 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        
+        app.UseAuthentication();
 
         app.UseAuthorization();
 
