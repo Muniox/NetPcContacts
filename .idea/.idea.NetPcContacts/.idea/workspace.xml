@@ -10,19 +10,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f0d0fa75-9522-4ee5-80b4-1aa622b2765f" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/NetPcContacts.Application/Extensions/ServiceCollectionExtension.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/NetPcContacts.Infrastructure/Extensions/ServiceCollectionExtensions.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/NetPcContacts.Infrastructure/Persistence/NetPcContactsDbContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/NetPcContacts.Domain/IRepositories/ISubcategoryRepository.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/NetPcContacts.Infrastructure/Repositories/SubcategoryRepository.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.NetPcContacts/.idea/dataSources.local.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.NetPcContacts/.idea/dataSources.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.NetPcContacts/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.NetPcContacts/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NetPcContacts.Api/Controllers/WeatherForecastController.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NetPcContacts.Api/NetPcContacts.Api.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/NetPcContacts.Api/NetPcContacts.Api.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NetPcContacts.Api/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/NetPcContacts.Api/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NetPcContacts.Api/WeatherForecast.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NetPcContacts.Api/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/NetPcContacts.Api/appsettings.Development.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NetPcContacts.Application/NetPcContacts.Application.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/NetPcContacts.Application/NetPcContacts.Application.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NetPcContacts.Infrastructure/NetPcContacts.Infrastructure.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/NetPcContacts.Infrastructure/NetPcContacts.Infrastructure.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NetPcContacts.sln" beforeDir="false" afterPath="$PROJECT_DIR$/NetPcContacts.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetPcContacts.Api/NetPcContacts.sqlite-shm" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetPcContacts.Api/NetPcContacts.sqlite-wal" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/NetPcContacts.sqlite" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,20 +30,20 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="develop" />
+        <entry key="$PROJECT_DIR$" value="sql-lite-database" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/NetPcContacts.Api.Tests/UnitTest1.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Muniox/RiderProjects/NetPcContacts/NetPcContacts.Api/Program.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Muniox/RiderProjects/NetPcContacts/NetPcContacts.Api/appsettings.Development.json" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetPcContacts.Application.Tests/UnitTest1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetPcContacts.Application/Extensions/ServiceCollectionExtension.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/NetPcContacts.Domain/IRepositories/ISubcategoryRepository.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetPcContacts.Infrastructure.Tests/UnitTest1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetPcContacts.Infrastructure/Extensions/ServiceCollectionExtensions.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/NetPcContacts.Infrastructure/Persistence/NetPcContactsDbContext.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/NetPcContacts.Infrastructure/Repositories/SubcategoryRepository.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/global.json" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
@@ -63,29 +58,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.NetPcContacts.Api: IIS Express.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "sql-lite-database",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.NetPcContacts.Api: IIS Express.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;repository-pattern&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   },
-  "keyToStringList": {
-    "DatabaseDriversLRU": [
-      "sqlite"
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;sqlite&quot;
     ],
-    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
-      "SQLite"
+    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
+      &quot;SQLite&quot;
     ]
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.NetPcContacts.Api: IIS Express">
     <configuration name="NetPcContacts.Api: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/NetPcContacts.Api/NetPcContacts.Api.csproj" />
@@ -147,7 +143,10 @@
       <workItem from="1759777553094" duration="4700000" />
       <workItem from="1759783566411" duration="1440000" />
       <workItem from="1759785147357" duration="181000" />
-      <workItem from="1759785511013" duration="1856000" />
+      <workItem from="1759785511013" duration="2523000" />
+      <workItem from="1759860287369" duration="2048000" />
+      <workItem from="1759863326076" duration="623000" />
+      <workItem from="1759864224612" duration="1908000" />
     </task>
     <task id="LOCAL-00001" summary="Initialize base solution structure with ASP.NET Core API project and associated layers. Add WeatherForecast endpoint, Swagger setup, and .gitignore.">
       <option name="closed" value="true" />
@@ -157,7 +156,23 @@
       <option name="project" value="LOCAL" />
       <updated>1759778618224</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Remove WeatherForecast sample, integrate application and infrastructure layers, and add SQLite support with DbContext configuration.">
+      <option name="closed" value="true" />
+      <created>1759787471148</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1759787471148</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Add IntelliJ IDEA project metadata, including datasource configuration for SQLite">
+      <option name="closed" value="true" />
+      <created>1759787497212</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1759787497212</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -176,7 +191,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="sql-lite-database" />
+                        <option value="origin/repository-pattern" />
                       </list>
                     </value>
                   </entry>
@@ -191,7 +206,12 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Initialize base solution structure with ASP.NET Core API project and associated layers. Add WeatherForecast endpoint, Swagger setup, and .gitignore." />
-    <option name="LAST_COMMIT_MESSAGE" value="&#10;" />
+    <MESSAGE value="Remove WeatherForecast-related code and integrate Application and Infrastructure layers. Add SQLite configuration and structural setup for persistence." />
+    <MESSAGE value="Integrate application and infrastructure layers with dependency injection. Add SQLite database support and configure connection string. Remove WeatherForecast functionality." />
+    <MESSAGE value="Remove WeatherForecast example, integrate application and infrastructure layers, add EF Core SQLite setup and FluentValidation." />
+    <MESSAGE value="Remove WeatherForecast sample, integrate application and infrastructure layers, and add SQLite support with DbContext configuration." />
+    <MESSAGE value="Add IntelliJ IDEA project metadata, including datasource configuration for SQLite" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add IntelliJ IDEA project metadata, including datasource configuration for SQLite" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

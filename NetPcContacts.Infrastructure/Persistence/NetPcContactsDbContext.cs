@@ -34,6 +34,5 @@ internal class NetPcContactsDbContext : IdentityDbContext<User>
             .WithOne(sub => sub.Category)
             .HasForeignKey(sub => sub.CategoryId)
             .OnDelete(DeleteBehavior.SetNull);
-
     }
 }
