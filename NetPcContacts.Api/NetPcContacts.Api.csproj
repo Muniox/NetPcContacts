@@ -20,9 +20,5 @@
       <ProjectReference Include="..\NetPcContacts.Application\NetPcContacts.Application.csproj" />
       <ProjectReference Include="..\NetPcContacts.Infrastructure\NetPcContacts.Infrastructure.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Controllers\" />
-    </ItemGroup>
     
 </Project>

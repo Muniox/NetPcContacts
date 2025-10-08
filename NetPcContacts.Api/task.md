@@ -28,3 +28,7 @@
 		• opis poszczególnych klas i metod,
 		• wykorzystane biblioteki,
 		• sposób kompilacji aplikacji.
+
+## Dodatkowo
+	• zrobić ograniczenia ilości znaków w bazie danych
+	• poprawienie zwracanych błędów przez custom exceptions
