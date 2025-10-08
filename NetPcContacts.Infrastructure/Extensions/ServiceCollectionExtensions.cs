@@ -7,6 +7,7 @@ using NetPcContacts.Domain.Entities;
 using NetPcContacts.Domain.IRepositories;
 using NetPcContacts.Infrastructure.Persistence;
 using NetPcContacts.Infrastructure.Repositories;
+using NetPcContacts.Infrastructure.Seeders;
 
 namespace NetPcContacts.Infrastructure.Extensions;
 
@@ -30,5 +31,8 @@ public static class ServiceCollectionExtensions
 
         // Rejestracja repozytorium
         services.AddScoped<IContactsRepository, ContactsRepository>();
+        
+        // Rejestracja seedera
+        services.AddScoped<IApplicationSeeder, ApplicationSeeder>();
     }
 }
