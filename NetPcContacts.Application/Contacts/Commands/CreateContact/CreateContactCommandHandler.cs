@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
 using NetPcContacts.Domain.Entities;
+using NetPcContacts.Domain.Exceptions;
 using NetPcContacts.Domain.IRepositories;
 
 namespace NetPcContacts.Application.Contacts.Commands.CreateContact
@@ -56,7 +57,7 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
             var emailExists = await _contactsRepository.EmailExists(request.Email);
             if (emailExists)
             {
-                throw new InvalidOperationException($"Kontakt z emailem '{request.Email}' już istnieje w systemie.");
+                throw new DuplicateEmailException(request.Email);
             }
 
             // KROK 2: Walidacja istnienia kategorii
@@ -64,7 +65,7 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
             var categoryExists = await _categoryRepository.Exists(request.CategoryId);
             if (!categoryExists)
             {
-                throw new InvalidOperationException($"Kategoria o ID '{request.CategoryId}' nie istnieje.");
+                throw new NotFoundException(nameof(request.CategoryId), request.CategoryId.ToString());
             }
 
             // KROK 3: Walidacja podkategorii (jeśli podana)
@@ -79,12 +80,7 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
 
                 if (!subcategoryValid)
                 {
-                    throw new InvalidOperationException(
-                        $"Podkategoria o ID '{request.SubcategoryId.Value}' nie istnieje " +
-                        $"lub nie należy do kategorii o ID '{request.CategoryId}'.")
-                        {
-                            Data = { ["SubcategoryId"] = request.SubcategoryId.Value, ["CategoryId"] = request.CategoryId }
-                        };
+                    throw new NotFoundException(nameof(request.SubcategoryId), request.SubcategoryId.Value.ToString());
                 }
             }
 
