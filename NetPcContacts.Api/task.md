@@ -35,3 +35,6 @@
 	• walidacja danych wejściowych
 	• paginacja
 	• możliwość logowania użytkownika przy global exceptions
+	• testy jednostkowe
+	• rate limiting
+	• caching
