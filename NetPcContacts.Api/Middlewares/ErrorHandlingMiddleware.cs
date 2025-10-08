@@ -23,7 +23,6 @@ namespace NetPcContacts.Api.Middlewares
 
                 context.Response.StatusCode = 404;
                 await context.Response.WriteAsync(notFound.Message);
-                
             }
             catch (DuplicateEmailException duplicate)
             {
