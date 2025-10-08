@@ -38,3 +38,4 @@
 	• testy jednostkowe
 	• rate limiting
 	• caching
+	• dodać do OpenApi zwracane Statusy
