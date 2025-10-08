@@ -8,10 +8,17 @@
 
     <ItemGroup>
       <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
-      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+      <PackageReference Include="MediatR" Version="12.5.0" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\NetPcContacts.Domain\NetPcContacts.Domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Contacts\Commands\DeleteContact\" />
+      <Folder Include="Contacts\Commands\UpdateContact\" />
+      <Folder Include="Contacts\Dtos\" />
+      <Folder Include="Contacts\Queries\" />
     </ItemGroup>
 </Project>

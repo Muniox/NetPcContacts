@@ -44,7 +44,7 @@ namespace NetPcContacts.Api.Extensions
                 {
                     builder.AllowAnyHeader()
                     .AllowAnyMethod()
-                    .WithOrigins("*")
+                    .WithOrigins("http://localhost") // TODO: zmienić (port) po dodaniu frontendu
                     .AllowCredentials();
                 });
             });
