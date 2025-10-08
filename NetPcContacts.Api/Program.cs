@@ -1,4 +1,5 @@
 using NetPcContacts.Api.Extensions;
+using NetPcContacts.Api.Middlewares;
 using NetPcContacts.Application.Extensions;
 using NetPcContacts.Domain.Entities;
 using NetPcContacts.Infrastructure.Extensions;
@@ -30,6 +31,9 @@ public class Program
         // wywo³anie metody Seed i za³adowanie danych pocz¹tkowych
         await seeder.Seed();
 
+        // Middlewares
+        app.UseMiddleware<ErrorHandlingMiddleware>();
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
@@ -42,7 +46,9 @@ public class Program
             .MapIdentityApi<User>();
 
         app.UseHttpsRedirection();
-        
+
+        app.UseCors("CorsPolicy");
+
         app.UseAuthentication();
 
         app.UseAuthorization();
