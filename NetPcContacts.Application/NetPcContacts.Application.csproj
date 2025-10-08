@@ -7,10 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\NetPcContacts.Domain\NetPcContacts.Domain.csproj" />
+      <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.1" />
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
+      <ProjectReference Include="..\NetPcContacts.Domain\NetPcContacts.Domain.csproj" />
     </ItemGroup>
 </Project>
