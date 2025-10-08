@@ -2,12 +2,13 @@ using NetPcContacts.Api.Extensions;
 using NetPcContacts.Application.Extensions;
 using NetPcContacts.Domain.Entities;
 using NetPcContacts.Infrastructure.Extensions;
+using NetPcContacts.Infrastructure.Seeders;
 
 namespace NetPcContacts.Api;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,13 @@ public class Program
         builder.Services.AddInfrastructure(builder.Configuration);
         
         var app = builder.Build();
+
+        // Seeders
+        var scrope = app.Services.CreateScope();
+        var seeder = scrope.ServiceProvider.GetRequiredService<IApplicationSeeder>();
+
+        // wywo³anie metody Seed i za³adowanie danych pocz¹tkowych
+        await seeder.Seed();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())

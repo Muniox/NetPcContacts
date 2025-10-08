@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.OpenApi.Models;
 
 namespace NetPcContacts.Api.Extensions
@@ -7,7 +9,7 @@ namespace NetPcContacts.Api.Extensions
     {
         public static void AddPresentation(this WebApplicationBuilder builder)
         {
-            builder.Services.AddAuthentication();
+            builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen( options => 
