@@ -14,8 +14,4 @@
     <ItemGroup>
       <ProjectReference Include="..\NetPcContacts.Domain\NetPcContacts.Domain.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Contacts\Commands\UpdateContact\" />
-    </ItemGroup>
 </Project>

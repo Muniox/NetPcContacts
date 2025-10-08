@@ -1,16 +1,21 @@
 ﻿using FluentValidation;
 
-namespace NetPcContacts.Application.Contacts.Commands.CreateContact
+namespace NetPcContacts.Application.Contacts.Commands.UpdateContact
 {
     /// <summary>
-    /// Validator dla komendy CreateContactCommand.
+    /// Validator dla komendy UpdateContactCommand.
     /// Implementuje reguły walidacji danych wejściowych zgodnie z wymaganiami biznesowymi.
     /// Używa biblioteki FluentValidation do deklaratywnej definicji reguł.
     /// </summary>
-    public class CreateContactCommandValidator : AbstractValidator<CreateContactCommand>
+    public class UpdateContactCommandValidator : AbstractValidator<UpdateContactCommand>
     {
-        public CreateContactCommandValidator()
+        public UpdateContactCommandValidator()
         {
+            // Walidacja ID kontaktu - wymagane, większe od zera
+            RuleFor(x => x.Id)
+                .GreaterThan(0)
+                .WithMessage("ID kontaktu musi być większe od zera.");
+
             // Walidacja imienia - wymagane, niepuste, długość od 1 do 100 znaków
             RuleFor(x => x.Name)
                 .NotEmpty()
@@ -35,21 +40,26 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
                 .MaximumLength(255)
                 .WithMessage("Email nie może przekraczać 255 znaków.");
 
-            // Walidacja hasła - wymagane, spełniające standardy złożoności
+            // Walidacja hasła - opcjonalne, ale jeśli podane, musi spełniać standardy złożoności
+            // Jeśli hasło jest null lub puste, walidacja nie jest wykonywana (hasło nie zostanie zmienione)
             RuleFor(x => x.Password)
-                .NotEmpty()
-                .WithMessage("Hasło jest wymagane.")
                 .MinimumLength(8)
+                .When(x => !string.IsNullOrWhiteSpace(x.Password))
                 .WithMessage("Hasło musi zawierać minimum 8 znaków.")
                 .MaximumLength(100)
+                .When(x => !string.IsNullOrWhiteSpace(x.Password))
                 .WithMessage("Hasło nie może przekraczać 100 znaków.")
                 .Matches(@"[A-Z]")
+                .When(x => !string.IsNullOrWhiteSpace(x.Password))
                 .WithMessage("Hasło musi zawierać przynajmniej jedną wielką literę.")
                 .Matches(@"[a-z]")
+                .When(x => !string.IsNullOrWhiteSpace(x.Password))
                 .WithMessage("Hasło musi zawierać przynajmniej jedną małą literę.")
                 .Matches(@"[0-9]")
+                .When(x => !string.IsNullOrWhiteSpace(x.Password))
                 .WithMessage("Hasło musi zawierać przynajmniej jedną cyfrę.")
                 .Matches(@"[\W_]")
+                .When(x => !string.IsNullOrWhiteSpace(x.Password))
                 .WithMessage("Hasło musi zawierać przynajmniej jeden znak specjalny.");
 
             // Walidacja numeru telefonu - wymagane, podstawowy format
@@ -69,6 +79,12 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
                 .WithMessage("Data urodzenia musi być datą z przeszłości.")
                 .GreaterThan(DateOnly.FromDateTime(DateTime.Today.AddYears(-150)))
                 .WithMessage("Data urodzenia nie może być starsza niż 150 lat.");
+
+            // Walidacja CategoryId - wymagane, większe od zera
+            // Uwaga: Sprawdzenie czy kategoria istnieje odbywa się w handlerze
+            RuleFor(x => x.CategoryId)
+                .GreaterThan(0)
+                .WithMessage("Kategoria jest wymagana.");
 
             // Walidacja SubcategoryId - jeśli podane, musi być większe od zera
             RuleFor(x => x.SubcategoryId)
