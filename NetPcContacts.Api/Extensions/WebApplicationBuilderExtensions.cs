@@ -1,7 +1,6 @@
-﻿using Microsoft.AspNetCore.Authentication.BearerToken;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
+using NetPcContacts.Api.Middlewares;
 
 namespace NetPcContacts.Api.Extensions
 {
@@ -49,6 +48,9 @@ namespace NetPcContacts.Api.Extensions
                     .AllowCredentials();
                 });
             });
+
+            // Middlewares
+            builder.Services.AddScoped<ErrorHandlingMiddleware>();
         }
     }
 }
