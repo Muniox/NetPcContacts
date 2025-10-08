@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using NetPcContacts.Domain.Entities;
 using NetPcContacts.Domain.Exceptions;
 using NetPcContacts.Domain.IRepositories;
@@ -13,6 +14,7 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
     /// </summary>
     public class CreateContactCommandHandler : IRequestHandler<CreateContactCommand, int>
     {
+        private readonly ILogger<CreateContactCommandHandler> _logger;
         private readonly IContactsRepository _contactsRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly ISubcategoryRepository _subcategoryRepository;
@@ -26,11 +28,13 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
         /// <param name="subcategoryRepository">Repozytorium podkategorii</param>
         /// <param name="passwordHasher">Hasher haseł z ASP.NET Core Identity</param>
         public CreateContactCommandHandler(
+            ILogger<CreateContactCommandHandler> logger,
             IContactsRepository contactsRepository,
             ICategoryRepository categoryRepository,
             ISubcategoryRepository subcategoryRepository,
             IPasswordHasher<Contact> passwordHasher)
         {
+            _logger = logger;
             _contactsRepository = contactsRepository;
             _categoryRepository = categoryRepository;
             _subcategoryRepository = subcategoryRepository;
@@ -52,6 +56,7 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
         /// </exception>
         public async Task<int> Handle(CreateContactCommand request, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Creating new contact with email: {Email}", request.Email);
             // KROK 1: Walidacja unikalności emaila
             // Email musi być unikalny w całym systemie (wymaganie z task.md)
             var emailExists = await _contactsRepository.EmailExists(request.Email);
@@ -105,6 +110,8 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
             // KROK 5: Zapis do bazy danych
             // Repository wywołuje SaveChangesAsync wewnątrz metody Create
             var contactId = await _contactsRepository.Create(contact);
+
+            _logger.LogInformation("Contact created successfully with ID: {ContactId}", contactId);
 
             // KROK 6: Zwrócenie ID utworzonego kontaktu
             return contactId;

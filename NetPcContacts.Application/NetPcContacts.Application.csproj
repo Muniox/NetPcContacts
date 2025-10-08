@@ -16,7 +16,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Contacts\Commands\DeleteContact\" />
       <Folder Include="Contacts\Commands\UpdateContact\" />
     </ItemGroup>
 </Project>

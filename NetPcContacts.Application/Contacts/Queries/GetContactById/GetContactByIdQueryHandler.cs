@@ -41,6 +41,8 @@ namespace NetPcContacts.Application.Contacts.Queries.GetContactById
                 throw new NotFoundException(nameof(contact), request.ContactId.ToString());
             }
 
+            _logger.LogInformation("Contact retrieved successfully: {ContactId}", request.ContactId);
+
             // Mapuj encję Contact na ContactDto
             // WAŻNE: NIE zwracamy PasswordHash - bezpieczeństwo!
             return new ContactDto
