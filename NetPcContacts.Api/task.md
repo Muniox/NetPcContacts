@@ -31,4 +31,6 @@
 
 ## Dodatkowo
 	• zrobić ograniczenia ilości znaków w bazie danych
-	• poprawienie zwracanych błędów przez custom exceptions
+	• poprawienie zwracanych błędów przez custom exceptions - done
+	• walidacja danych wejściowych
+	• paginacja

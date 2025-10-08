@@ -25,6 +25,13 @@ namespace NetPcContacts.Api.Middlewares
                 await context.Response.WriteAsync(notFound.Message);
                 
             }
+            catch (DuplicateEmailException duplicate)
+            {
+                _logger.LogError(duplicate.Message);
+
+                context.Response.StatusCode = 409;
+                await context.Response.WriteAsync(duplicate.Message);
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, ex.Message);
