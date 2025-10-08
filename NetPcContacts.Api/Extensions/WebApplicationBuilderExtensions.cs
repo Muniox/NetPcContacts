@@ -37,6 +37,16 @@ namespace NetPcContacts.Api.Extensions
                     }
                 });
             });
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder.AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .WithOrigins("*")
+                    .AllowCredentials();
+                });
+            });
         }
     }
 }

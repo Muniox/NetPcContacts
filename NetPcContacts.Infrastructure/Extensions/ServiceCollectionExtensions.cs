@@ -1,11 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Authentication.BearerToken;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using NetPcContacts.Domain.Entities;
 using NetPcContacts.Domain.IRepositories;
 using NetPcContacts.Infrastructure.Persistence;
 using NetPcContacts.Infrastructure.Repositories;
-using Microsoft.AspNetCore.Identity;
-using NetPcContacts.Domain.Entities;
 
 namespace NetPcContacts.Infrastructure.Extensions;
 
@@ -23,6 +24,9 @@ public static class ServiceCollectionExtensions
         services.AddIdentityCore<User>()
             .AddEntityFrameworkStores<NetPcContactsDbContext>()
             .AddApiEndpoints();
+
+        // domyślnie token wygasa po 1h, zmieniamy na 1 min
+        services.ConfigureAll<BearerTokenOptions>(option => option.BearerTokenExpiration = TimeSpan.FromMinutes(1));
 
         // Rejestracja repozytorium
         services.AddScoped<IContactsRepository, ContactsRepository>();
