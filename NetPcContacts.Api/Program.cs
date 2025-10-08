@@ -1,4 +1,6 @@
+using NetPcContacts.Api.Extensions;
 using NetPcContacts.Application.Extensions;
+using NetPcContacts.Domain.Entities;
 using NetPcContacts.Infrastructure.Extensions;
 
 namespace NetPcContacts.Api;
@@ -9,12 +11,8 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
-
-        builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        // Added Presentation Layer
+        builder.AddPresentation();
 
         // Added Application Layer
         builder.Services.AddApplication();
@@ -30,6 +28,10 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI();
         }
+
+        app.MapGroup("api/identity")
+            .WithTags("Identity")
+            .MapIdentityApi<User>();
 
         app.UseHttpsRedirection();
         
