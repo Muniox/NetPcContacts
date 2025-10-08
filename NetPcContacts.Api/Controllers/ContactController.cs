@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using NetPcContacts.Application.Contacts.Commands.CreateContact;
+using NetPcContacts.Application.Contacts.Commands.DeleteContact;
 using NetPcContacts.Application.Contacts.Queries.GetContactById;
 
 namespace NetPcContacts.Api.Controllers
@@ -29,6 +30,13 @@ namespace NetPcContacts.Api.Controllers
         {
             var contact = await _mediator.Send(new GetContactByIdQuery(id));
             return Ok(contact);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> DeleteContact([FromRoute] int id)
+        {
+            await _mediator.Send(new DeleteContactCommand(id));
+            return NoContent();
         }
     }
 }
