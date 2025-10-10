@@ -35,7 +35,7 @@
 	• walidacja danych wejściowych - done
 	• paginacja (searchable, sortable) - done
 	• Logowanie użytkownika w global exceptions - done
-	• testy jednostkowe
+	• testy jednostkowe - done
 	• rate limiting - done
 	• caching
 	• dodać do OpenApi zwracane Statusy z opisami - done
