@@ -32,6 +32,86 @@ namespace NetPcContacts.Infrastructure.Persistence
         {
             base.OnModelCreating(modelBuilder);
 
+            // ========================================
+            // KONFIGURACJA ENCJI CONTACT
+            // ========================================
+
+            // Konfiguracja właściwości Contact.Name
+            // Zgodnie z CreateContactCommandValidator: Length(1, 100)
+            modelBuilder.Entity<Contact>()
+                .Property(c => c.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            // Konfiguracja właściwości Contact.Surname
+            // Zgodnie z CreateContactCommandValidator: Length(1, 100)
+            modelBuilder.Entity<Contact>()
+                .Property(c => c.Surname)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            // Konfiguracja właściwości Contact.Email
+            // Zgodnie z CreateContactCommandValidator: MaximumLength(255)
+            // WYMAGANIE: Email musi być unikalny w całym systemie
+            modelBuilder.Entity<Contact>()
+                .Property(c => c.Email)
+                .IsRequired()
+                .HasMaxLength(255);
+
+            modelBuilder.Entity<Contact>()
+                .HasIndex(c => c.Email)
+                .IsUnique();
+
+            // Konfiguracja właściwości Contact.PasswordHash
+            // Hash hasła może być długi (PBKDF2 generuje długie hashe)
+            // Standardowy hash z Identity to ~100-150 znaków
+            modelBuilder.Entity<Contact>()
+                .Property(c => c.PasswordHash)
+                .IsRequired()
+                .HasMaxLength(500);
+
+            // Konfiguracja właściwości Contact.PhoneNumber
+            // Zgodnie z CreateContactCommandValidator: Length(9, 20)
+            modelBuilder.Entity<Contact>()
+                .Property(c => c.PhoneNumber)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            // Konfiguracja właściwości Contact.CustomSubcategory
+            // Zgodnie z CreateContactCommandValidator: MaximumLength(100)
+            // Pole opcjonalne
+            modelBuilder.Entity<Contact>()
+                .Property(c => c.CustomSubcategory)
+                .HasMaxLength(100);
+
+            // ========================================
+            // KONFIGURACJA ENCJI CATEGORY
+            // ========================================
+
+            // Konfiguracja właściwości Category.CategoryName
+            // Przykładowe wartości: "Służbowy", "Prywatny", "Inny"
+            // Limit 50 znaków wystarczy dla nazw kategorii
+            modelBuilder.Entity<Category>()
+                .Property(c => c.CategoryName)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            // ========================================
+            // KONFIGURACJA ENCJI SUBCATEGORY
+            // ========================================
+
+            // Konfiguracja właściwości Subcategory.SubcategoryName
+            // Przykładowe wartości: "Szef", "Klient", "Dostawca", itp.
+            // Limit 100 znaków dla nazw podkategorii
+            modelBuilder.Entity<Subcategory>()
+                .Property(s => s.SubcategoryName)
+                .IsRequired()
+                .HasMaxLength(100);
+
+            // ========================================
+            // KONFIGURACJA RELACJI
+            // ========================================
+
             // Konfiguracja relacji Contact -> Category (wiele do jednego)
             modelBuilder.Entity<Contact>()
                 .HasOne(c => c.Category)
@@ -52,12 +132,6 @@ namespace NetPcContacts.Infrastructure.Persistence
                 .WithOne(sub => sub.Category)
                 .HasForeignKey(sub => sub.CategoryId)
                 .OnDelete(DeleteBehavior.SetNull);
-
-            // WYMAGANIE: Email musi być unikalny w całym systemie
-            // Zapobiega duplikacji adresów email przy tworzeniu kont
-            modelBuilder.Entity<Contact>()
-                .HasIndex(c => c.Email)
-                .IsUnique();
         }
     }
 }
