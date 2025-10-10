@@ -4,11 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace NetPcContacts.Application.Extensions;
 
-public static class ServiceCollectionExtension
+public static class ServiceCollectionExtensions
 {
     public static void AddApplication(this IServiceCollection services)
     {
-        var applicationAssembly = typeof(ServiceCollectionExtension).Assembly;
+        var applicationAssembly = typeof(ServiceCollectionExtensions).Assembly;
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(applicationAssembly));
 
         services.AddValidatorsFromAssembly(applicationAssembly)
