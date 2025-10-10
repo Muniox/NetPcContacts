@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NetPcContacts.Infrastructure.Persistence;
 
@@ -10,9 +11,11 @@ using NetPcContacts.Infrastructure.Persistence;
 namespace NetPcContacts.Infrastructure.Migrations
 {
     [DbContext(typeof(NetPcContactsDbContext))]
-    partial class NetPcContactsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251008164143_UpdateContactEntitySchema")]
+    partial class UpdateContactEntitySchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.20");
@@ -153,7 +156,6 @@ namespace NetPcContacts.Infrastructure.Migrations
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
-                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -174,27 +176,22 @@ namespace NetPcContacts.Infrastructure.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("CustomSubcategory")
-                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(255)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(500)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PhoneNumber")
                         .IsRequired()
-                        .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("SubcategoryId")
@@ -202,7 +199,6 @@ namespace NetPcContacts.Infrastructure.Migrations
 
                     b.Property<string>("Surname")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -228,7 +224,6 @@ namespace NetPcContacts.Infrastructure.Migrations
 
                     b.Property<string>("SubcategoryName")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

@@ -25,10 +25,8 @@ public class Program
         var app = builder.Build();
 
         // Seeders
-        var scrope = app.Services.CreateScope();
-        var seeder = scrope.ServiceProvider.GetRequiredService<IApplicationSeeder>();
-
-        // wywo³anie metody Seed i za³adowanie danych pocz¹tkowych
+        var scope = app.Services.CreateScope();
+        var seeder = scope.ServiceProvider.GetRequiredService<IApplicationSeeder>();
         await seeder.Seed();
 
         // Middlewares
@@ -41,18 +39,22 @@ public class Program
             app.UseSwaggerUI();
         }
 
+        // Mapowanie Identity API z Rate Limiting
         app.MapGroup("api/identity")
             .WithTags("Identity")
-            .MapIdentityApi<User>();
+            .MapIdentityApi<User>()
+            .RequireRateLimiting("auth");
 
         app.UseHttpsRedirection();
 
         app.UseCors("CorsPolicy");
 
+        // WA¯NE: UseRateLimiter PRZED Authentication i Authorization
+        app.UseRateLimiter();
+
         app.UseAuthentication();
 
         app.UseAuthorization();
-
 
         app.MapControllers();
 

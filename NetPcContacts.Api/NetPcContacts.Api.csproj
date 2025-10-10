@@ -4,6 +4,10 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
+        
+        <!-- Generowanie dokumentacji XML dla Swagger -->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>$(NoWarn);1591</NoWarn> <!-- Wyłącza ostrzeżenia o brakujących komentarzach XML -->
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,10 +23,6 @@
     <ItemGroup>
       <ProjectReference Include="..\NetPcContacts.Application\NetPcContacts.Application.csproj" />
       <ProjectReference Include="..\NetPcContacts.Infrastructure\NetPcContacts.Infrastructure.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Controllers\" />
     </ItemGroup>
     
 </Project>

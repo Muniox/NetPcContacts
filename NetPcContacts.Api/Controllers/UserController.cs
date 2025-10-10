@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace NetPcContacts.Api.Controllers
 {
+    /// <summary>
+    /// Mo¿liwoœæ póŸniejszego zaimplementowania do zarz¹dzania u¿ytkownikami
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
@@ -13,12 +16,12 @@ namespace NetPcContacts.Api.Controllers
         {
             _logger = logger;
         }
-        
-        [HttpGet("Hello")]
-        public IActionResult Hello()
-        {
-            return Ok("Hello World");
-        }
+
+        //[HttpGet("Hello")]
+        //public IActionResult Hello()
+        //{
+        //    return Ok("Hello World");
+        //}
     }
 
 }

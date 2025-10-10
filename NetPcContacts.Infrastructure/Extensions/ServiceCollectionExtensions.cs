@@ -31,8 +31,13 @@ public static class ServiceCollectionExtensions
 
         // Rejestracja repozytorium
         services.AddScoped<IContactsRepository, ContactsRepository>();
-        
+        services.AddScoped<ICategoryRepository, CategoryRepository>();
+        services.AddScoped<ISubcategoryRepository, SubcategoryRepository>();
+
         // Rejestracja seedera
         services.AddScoped<IApplicationSeeder, ApplicationSeeder>();
+
+        // Rejestracja Password Hasher z ASP.NET Core Identity
+        services.AddScoped<IPasswordHasher<Contact>, PasswordHasher<Contact>>();
     }
 }
