@@ -1,7 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using NetPcContacts.Domain.Constants;
 using NetPcContacts.Domain.Entities;
 using NetPcContacts.Domain.IRepositories;
 using NetPcContacts.Infrastructure.Persistence;
+using System.Linq.Expressions;
 
 namespace NetPcContacts.Infrastructure.Repositories
 {
@@ -90,6 +92,51 @@ namespace NetPcContacts.Infrastructure.Repositories
         public async Task SaveChanges()
         {
             await _dbContext.SaveChangesAsync();
+        }
+
+        /// <summary>
+        /// Pobiera stronicowaną listę kontaktów spełniających kryteria wyszukiwania z możliwością sortowania.
+        /// </summary>
+        public async Task<(IEnumerable<Contact>, int)> GetAllMatchingAsync(string? searchPhrase, 
+            int pageSize, 
+            int pageNumber,
+            string? sortBy,
+            SortDirection sortDirection)
+        {
+            var searchPhraseLower = searchPhrase?.ToLower();
+
+            var baseQuery = _dbContext
+                .Contacts
+                .Include(c => c.Category)
+                .Include(c => c.Subcategory)
+                .Where(c => searchPhraseLower == null || (c.Name.ToLower().Contains(searchPhraseLower)
+                                                       || c.Surname.ToLower().Contains(searchPhraseLower)
+                                                       || c.Email.ToLower().Contains(searchPhraseLower)));
+
+            var totalCount = await baseQuery.CountAsync();
+
+            if(sortBy != null)
+            {
+                var columnsSelector = new Dictionary<string, Expression<Func<Contact, object>>>
+                {
+                    { "FirstName", c => c.Name },
+                    { "LastName", c => c.Surname },
+                    { "Category", c => c.Category.CategoryName },
+                };
+
+                var selectedColumn = columnsSelector[sortBy];
+
+                baseQuery = sortDirection == SortDirection.Ascending
+                    ? baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+            }
+
+            var contacts = await baseQuery
+                .Skip(pageSize * (pageNumber - 1))
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (contacts, totalCount);
         }
     }
 }

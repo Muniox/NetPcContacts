@@ -1,4 +1,5 @@
-﻿using NetPcContacts.Domain.Entities;
+﻿using NetPcContacts.Domain.Constants;
+using NetPcContacts.Domain.Entities;
 
 namespace NetPcContacts.Domain.IRepositories
 {
@@ -55,5 +56,17 @@ namespace NetPcContacts.Domain.IRepositories
         /// Używane po modyfikacji istniejącej encji.
         /// </summary>
         Task SaveChanges();
+
+        /// <summary>
+        /// Pobiera stronicowaną listę kontaktów spełniających kryteria wyszukiwania z możliwością sortowania.
+        /// </summary>
+        /// <param name="searchPhrase">Fraza wyszukiwania - filtruje kontakty po imieniu, nazwisku lub emailu (opcjonalne)</param>
+        /// <param name="pageSize">Liczba kontaktów na stronę</param>
+        /// <param name="pageNumber">Numer strony (numeracja od 1)</param>
+        /// <param name="sortBy">Nazwa pola do sortowania (opcjonalne)</param>
+        /// <param name="sortDirection">Kierunek sortowania (rosnąco/malejąco)</param>
+        /// <returns>Krotka zawierająca kolekcję kontaktów na danej stronie oraz całkowitą liczbę kontaktów spełniających kryteria</returns>
+        Task<(IEnumerable<Contact>, int)> GetAllMatchingAsync(string? searchPhrase, int pageSize, int pageNumber, string? sortBy, SortDirection sortDirection);
     }
 }
+
