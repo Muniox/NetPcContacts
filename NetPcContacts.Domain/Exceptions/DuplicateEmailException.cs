@@ -3,7 +3,7 @@
     public class DuplicateEmailException : Exception
     {
         public DuplicateEmailException(string email)
-            : base($"User with email '{email}' already exists")
+            : base($"Contact with email '{email}' already exists.")
         {
             Email = email;
         }
