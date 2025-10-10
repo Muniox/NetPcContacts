@@ -30,12 +30,12 @@
 		• sposób kompilacji aplikacji.
 
 ## Dodatkowo
-	• zrobić ograniczenia ilości znaków w bazie danych
+	• Ograniczenia znaków w bazie danych (EF Configuration)
 	• poprawienie zwracanych błędów przez custom exceptions - done
-	• walidacja danych wejściowych
-	• paginacja
-	• możliwość logowania użytkownika przy global exceptions
+	• walidacja danych wejściowych - done
+	• paginacja (searchable, sortable) - done
+	• Logowanie użytkownika w global exceptions - done
 	• testy jednostkowe
-	• rate limiting
+	• rate limiting - done
 	• caching
-	• dodać do OpenApi zwracane Statusy
+	• dodać do OpenApi zwracane Statusy - done
