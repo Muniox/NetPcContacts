@@ -14,31 +14,65 @@ namespace NetPcContacts.Api.Controllers
 {
     /// <summary>
     /// Kontroler zarządzający operacjami CRUD na kontaktach.
-    /// Zgodnie z wymaganiami: przeglądanie listy i szczegółów dostępne publicznie,
-    /// tworzenie, edycja i usuwanie wymagają autoryzacji.
     /// </summary>
+    /// <remarks>
+    /// Zgodnie z wymaganiami projektu:
+    /// - Przeglądanie listy i szczegółów dostępne publicznie (bez autoryzacji)
+    /// - Tworzenie, edycja i usuwanie wymagają autoryzacji (Bearer Token)
+    /// - Wszystkie endpointy chronione Rate Limiting
+    /// </remarks>
     [ApiController]
     [Route("api/[controller]")]
+    [Produces("application/json")]
     public class ContactController : ControllerBase
     {
         private readonly IMediator _mediator;
 
+        /// <summary>
+        /// Konstruktor kontrolera kontaktów.
+        /// </summary>
+        /// <param name="mediator">Mediator CQRS do obsługi komend i zapytań</param>
         public ContactController(IMediator mediator)
         {
             _mediator = mediator;
         }
 
         /// <summary>
-        /// Tworzy nowy kontakt.
-        /// Wymaga autoryzacji - tylko zalogowani użytkownicy mogą dodawać kontakty.
+        /// Tworzy nowy kontakt w systemie.
         /// </summary>
         /// <param name="command">Dane nowego kontaktu</param>
         /// <returns>ID utworzonego kontaktu</returns>
-        /// <response code="201">Kontakt został utworzony pomyślnie</response>
-        /// <response code="400">Nieprawidłowe dane wejściowe (walidacja)</response>
-        /// <response code="401">Brak autoryzacji - wymagane zalogowanie</response>
-        /// <response code="409">Konflikt - email już istnieje</response>
-        /// <response code="429">Zbyt wiele żądań - przekroczony limit</response>
+        /// <remarks>
+        /// Przykładowe żądanie:
+        /// 
+        ///     POST /api/contact
+        ///     {
+        ///        "name": "Jan",
+        ///        "surname": "Kowalski",
+        ///        "email": "jan.kowalski@example.com",
+        ///        "password": "SecureP@ss123",
+        ///        "phoneNumber": "+48 123 456 789",
+        ///        "birthDate": "1990-05-15",
+        ///        "categoryId": 1,
+        ///        "subcategoryId": 2,
+        ///        "customSubcategory": null
+        ///     }
+        /// 
+        /// **Wymagania:**
+        /// - Wymagana autoryzacja (Bearer Token)
+        /// - Email musi być unikalny w systemie
+        /// - Hasło musi spełniać standardy złożoności (min. 8 znaków, wielkie/małe litery, cyfry, znaki specjalne)
+        /// - CategoryId musi wskazywać na istniejącą kategorię
+        /// - SubcategoryId opcjonalny (wymagany dla kategorii "Służbowy")
+        /// - CustomSubcategory opcjonalny (używany dla kategorii "Inny")
+        /// 
+        /// **Rate Limiting:** 30 żądań/minutę
+        /// </remarks>
+        /// <response code="201">Kontakt został utworzony pomyślnie. Zwraca ID utworzonego kontaktu.</response>
+        /// <response code="400">Nieprawidłowe dane wejściowe. Sprawdź walidację pól.</response>
+        /// <response code="401">Brak autoryzacji. Wymagane zalogowanie i podanie Bearer Token.</response>
+        /// <response code="409">Konflikt - kontakt o podanym adresie email już istnieje.</response>
+        /// <response code="429">Zbyt wiele żądań. Przekroczono limit 30 żądań/minutę.</response>
         [HttpPost]
         [Authorize]
         [EnableRateLimiting("commands")]
@@ -55,17 +89,41 @@ namespace NetPcContacts.Api.Controllers
 
         /// <summary>
         /// Aktualizuje istniejący kontakt.
-        /// Wymaga autoryzacji - tylko zalogowani użytkownicy mogą edytować kontakty.
         /// </summary>
         /// <param name="id">ID kontaktu do aktualizacji</param>
         /// <param name="command">Zaktualizowane dane kontaktu</param>
         /// <returns>NoContent (204)</returns>
-        /// <response code="204">Kontakt został zaktualizowany pomyślnie</response>
-        /// <response code="400">Nieprawidłowe dane wejściowe (walidacja)</response>
-        /// <response code="401">Brak autoryzacji - wymagane zalogowanie</response>
-        /// <response code="404">Kontakt nie został znaleziony</response>
-        /// <response code="409">Konflikt - email już istnieje (przy zmianie emaila)</response>
-        /// <response code="429">Zbyt wiele żądań - przekroczony limit</response>
+        /// <remarks>
+        /// Przykładowe żądanie:
+        /// 
+        ///     PATCH /api/contact/5
+        ///     {
+        ///        "name": "Jan",
+        ///        "surname": "Nowak",
+        ///        "email": "jan.nowak@example.com",
+        ///        "password": null,
+        ///        "phoneNumber": "+48 987 654 321",
+        ///        "birthDate": "1990-05-15",
+        ///        "categoryId": 2,
+        ///        "subcategoryId": null,
+        ///        "customSubcategory": "Partner biznesowy"
+        ///     }
+        /// 
+        /// **Wymagania:**
+        /// - Wymagana autoryzacja (Bearer Token)
+        /// - ID musi wskazywać na istniejący kontakt
+        /// - Email musi być unikalny (jeśli zmieniany)
+        /// - Hasło opcjonalne - jeśli null, nie jest zmieniane
+        /// - Pozostałe pola jak przy tworzeniu
+        /// 
+        /// **Rate Limiting:** 30 żądań/minutę
+        /// </remarks>
+        /// <response code="204">Kontakt został zaktualizowany pomyślnie.</response>
+        /// <response code="400">Nieprawidłowe dane wejściowe.</response>
+        /// <response code="401">Brak autoryzacji.</response>
+        /// <response code="404">Kontakt o podanym ID nie został znaleziony.</response>
+        /// <response code="409">Konflikt - email już istnieje (przy zmianie emaila).</response>
+        /// <response code="429">Zbyt wiele żądań.</response>
         [HttpPatch("{id:int}")]
         [Authorize]
         [EnableRateLimiting("commands")]
@@ -84,13 +142,26 @@ namespace NetPcContacts.Api.Controllers
 
         /// <summary>
         /// Pobiera szczegóły pojedynczego kontaktu.
-        /// Dostępne publicznie - zgodnie z wymaganiami (pkt. 2 dostępna dla niezalogowanych).
         /// </summary>
         /// <param name="id">ID kontaktu</param>
         /// <returns>Szczegóły kontaktu</returns>
-        /// <response code="200">Zwraca szczegóły kontaktu</response>
-        /// <response code="404">Kontakt nie został znaleziony</response>
-        /// <response code="429">Zbyt wiele żądań - przekroczony limit</response>
+        /// <remarks>
+        /// Endpoint publiczny - nie wymaga autoryzacji zgodnie z wymaganiami projektu.
+        /// 
+        /// Przykładowe żądanie:
+        /// 
+        ///     GET /api/contact/5
+        /// 
+        /// Zwraca pełne informacje o kontakcie, w tym:
+        /// - Dane osobowe (imię, nazwisko, email, telefon, data urodzenia)
+        /// - Kategoria i podkategoria
+        /// - **UWAGA:** Hasło NIE jest zwracane (bezpieczeństwo)
+        /// 
+        /// **Rate Limiting:** 100 tokenów/minutę
+        /// </remarks>
+        /// <response code="200">Zwraca szczegóły kontaktu.</response>
+        /// <response code="404">Kontakt o podanym ID nie został znaleziony.</response>
+        /// <response code="429">Zbyt wiele żądań.</response>
         [HttpGet("{id:int}")]
         [EnableRateLimiting("queries")]
         [ProducesResponseType(typeof(ContactDto), StatusCodes.Status200OK)]
@@ -103,15 +174,25 @@ namespace NetPcContacts.Api.Controllers
         }
 
         /// <summary>
-        /// Usuwa kontakt.
-        /// Wymaga autoryzacji - tylko zalogowani użytkownicy mogą usuwać kontakty.
+        /// Usuwa kontakt z systemu.
         /// </summary>
         /// <param name="id">ID kontaktu do usunięcia</param>
         /// <returns>NoContent (204)</returns>
-        /// <response code="204">Kontakt został usunięty pomyślnie</response>
-        /// <response code="401">Brak autoryzacji - wymagane zalogowanie</response>
-        /// <response code="404">Kontakt nie został znaleziony</response>
-        /// <response code="429">Zbyt wiele żądań - przekroczony limit</response>
+        /// <remarks>
+        /// Przykładowe żądanie:
+        /// 
+        ///     DELETE /api/contact/5
+        /// 
+        /// **Wymagania:**
+        /// - Wymagana autoryzacja (Bearer Token)
+        /// - Operacja nieodwracalna - kontakt zostanie trwale usunięty
+        /// 
+        /// **Rate Limiting:** 30 żądań/minutę
+        /// </remarks>
+        /// <response code="204">Kontakt został usunięty pomyślnie.</response>
+        /// <response code="401">Brak autoryzacji.</response>
+        /// <response code="404">Kontakt o podanym ID nie został znaleziony.</response>
+        /// <response code="429">Zbyt wiele żądań.</response>
         [HttpDelete("{id:int}")]
         [Authorize]
         [EnableRateLimiting("commands")]
@@ -126,14 +207,33 @@ namespace NetPcContacts.Api.Controllers
         }
 
         /// <summary>
-        /// Pobiera wszystkie kontakty z paginacją, wyszukiwaniem i sortowaniem.
-        /// Dostępne publicznie - zgodnie z wymaganiami (pkt. 2 dostępna dla niezalogowanych).
+        /// Pobiera listę wszystkich kontaktów z paginacją, wyszukiwaniem i sortowaniem.
         /// </summary>
         /// <param name="query">Parametry zapytania (paginacja, wyszukiwanie, sortowanie)</param>
         /// <returns>Stronicowana lista kontaktów z podstawowymi danymi</returns>
-        /// <response code="200">Zwraca stronicowaną listę kontaktów</response>
-        /// <response code="400">Nieprawidłowe parametry zapytania (walidacja)</response>
-        /// <response code="429">Zbyt wiele żądań - przekroczony limit</response>
+        /// <remarks>
+        /// Endpoint publiczny - nie wymaga autoryzacji zgodnie z wymaganiami projektu.
+        /// 
+        /// Przykładowe żądanie:
+        /// 
+        ///     GET /api/contact?SearchPhrase=jan&amp;PageNumber=1&amp;PageSize=10&amp;SortBy=FirstName&amp;SortDirection=Ascending
+        /// 
+        /// **Parametry:**
+        /// - **SearchPhrase** (opcjonalny) - wyszukuje po imieniu, nazwisku lub emailu
+        /// - **PageNumber** (wymagany) - numer strony (min. 1)
+        /// - **PageSize** (wymagany) - rozmiar strony: 5, 10, 15 lub 30
+        /// - **SortBy** (opcjonalny) - kolumna do sortowania: FirstName, LastName, Category
+        /// - **SortDirection** (wymagany) - kierunek: Ascending (0) lub Descending (1)
+        /// 
+        /// **Zwracane dane:**
+        /// - Lista podstawowych informacji o kontaktach (imię, nazwisko, email, telefon, kategoria)
+        /// - Metadane paginacji (totalPages, totalItemsCount, itemsFrom, itemsTo)
+        /// 
+        /// **Rate Limiting:** 100 tokenów/minutę
+        /// </remarks>
+        /// <response code="200">Zwraca stronicowaną listę kontaktów.</response>
+        /// <response code="400">Nieprawidłowe parametry zapytania (np. niewłaściwy PageSize).</response>
+        /// <response code="429">Zbyt wiele żądań.</response>
         [HttpGet]
         [EnableRateLimiting("queries")]
         [ProducesResponseType(typeof(PagedResult<BasicContactDto>), StatusCodes.Status200OK)]

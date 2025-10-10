@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using NetPcContacts.Api.Middlewares;
+using System.Reflection;
 using System.Threading.RateLimiting;
 
 namespace NetPcContacts.Api.Extensions
@@ -23,13 +24,32 @@ namespace NetPcContacts.Api.Extensions
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
-            // Swagger/OpenAPI
+            // Swagger/OpenAPI z dokumentacją XML
             builder.Services.AddSwaggerGen(options => 
             {
+                // Podstawowe informacje o API
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "NetPcContacts API",
+                    Version = "v1",
+                    Description = "REST API do zarządzania kontaktami. Umożliwia przeglądanie, tworzenie, edycję i usuwanie kontaktów.",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Support",
+                        Email = "support@netpccontacts.com"
+                    }
+                });
+
+                // Włączenie komentarzy XML
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFilename);
+                options.IncludeXmlComments(xmlPath, includeControllerXmlComments: true);
+
+                // Bearer Token Authentication w Swagger UI
                 options.AddSecurityDefinition("BearerAuth", new OpenApiSecurityScheme()
                 {
                     In = ParameterLocation.Header,
-                    Description = "Enter proper JWT token",
+                    Description = "Wprowadź poprawny JWT token w formacie: Bearer {token}",
                     Name = "Authorization",
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
@@ -82,7 +102,6 @@ namespace NetPcContacts.Api.Extensions
                         }));
 
                 // Polityka dla endpointów autoryzacji (10 żądań/min)
-                // Ochrona przed brute-force attacks
                 options.AddPolicy("auth", httpContext =>
                     RateLimitPartition.GetFixedWindowLimiter(
                         partitionKey: httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous",
