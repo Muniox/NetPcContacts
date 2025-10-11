@@ -1,0 +1,170 @@
+<div class="register-container">
+  <mat-card class="register-card">
+    <mat-card-header>
+      <mat-card-title class="register-title">
+        <mat-icon class="register-icon">person_add</mat-icon>
+        Rejestracja
+      </mat-card-title>
+      <mat-card-subtitle class="register-subtitle">
+        Utwórz nowe konto w systemie NetPcContacts
+      </mat-card-subtitle>
+    </mat-card-header>
+
+<mat-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+        @if (errorMessage()) {
+          <div class="error-message">
+            <mat-icon>error</mat-icon>
+            <span>{{ errorMessage() }}</span>
+          </div>
+        }
+
+        @if (successMessage()) {
+          <div class="success-message">
+            <mat-icon>check_circle</mat-icon>
+            <span>{{ successMessage() }}</span>
+          </div>
+        }
+
+        <div class="form-layout">
+          <!-- Left column: Form fields -->
+          <div class="form-fields">
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Email</mat-label>
+              <input
+                matInput
+                type="email"
+                formControlName="email"
+                placeholder="przykład@email.com"
+                autocomplete="email">
+              <mat-icon matPrefix>email</mat-icon>
+              @if (registerForm.get('email')?.invalid && registerForm.get('email')?.touched) {
+                <mat-error>
+                  @if (registerForm.get('email')?.hasError('required')) {
+                    Email jest wymagany
+                  }
+                  @if (registerForm.get('email')?.hasError('email')) {
+                    Nieprawidłowy format email
+                  }
+                </mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Hasło</mat-label>
+              <input
+                matInput
+                [type]="hidePassword() ? 'password' : 'text'"
+                formControlName="password"
+                placeholder="Wprowadź hasło"
+                autocomplete="new-password">
+              <mat-icon matPrefix>key</mat-icon>
+              <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                (click)="togglePasswordVisibility()"
+                [attr.aria-label]="'Pokaż/Ukryj hasło'"
+                [attr.aria-pressed]="hidePassword()">
+                <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
+                <mat-error>
+                  @if (registerForm.get('password')?.hasError('required')) {
+                    Hasło jest wymagane
+                  }
+                  @if (registerForm.get('password')?.hasError('minlength')) {
+                    Hasło musi mieć co najmniej 8 znaków
+                  }
+                  @if (registerForm.get('password')?.hasError('pattern')) {
+                    Hasło musi zawierać wielką literę, małą literę, cyfrę i znak specjalny
+                  }
+                </mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Potwierdź hasło</mat-label>
+              <input
+                matInput
+                [type]="hideConfirmPassword() ? 'password' : 'text'"
+                formControlName="confirmPassword"
+                placeholder="Potwierdź hasło"
+                autocomplete="new-password">
+              <mat-icon matPrefix>lock</mat-icon>
+              <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                (click)="toggleConfirmPasswordVisibility()"
+                [attr.aria-label]="'Pokaż/Ukryj potwierdzenie hasła'"
+                [attr.aria-pressed]="hideConfirmPassword()">
+                <mat-icon>{{ hideConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+              </button>
+              @if (registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) {
+                <mat-error>
+                  @if (registerForm.get('confirmPassword')?.hasError('required')) {
+                    Potwierdzenie hasła jest wymagane
+                  }
+                </mat-error>
+              }
+              @if (registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched) {
+                <mat-error>
+                  Hasła nie są identyczne
+                </mat-error>
+              }
+            </mat-form-field>
+
+            <button
+              mat-raised-button
+              color="primary"
+              type="submit"
+              class="full-width"
+              [disabled]="registerForm.invalid || isLoading()">
+              @if (isLoading()) {
+                <mat-spinner diameter="20" class="button-spinner"></mat-spinner>
+                <span>Rejestracja...</span>
+              } @else {
+                <ng-container>
+                  <mat-icon>person_add</mat-icon>
+                  <span>Zarejestruj się</span>
+                </ng-container>
+              }
+            </button>
+
+            <div class="login-link">
+              <p>Masz już konto? <a routerLink="/login">Zaloguj się</a></p>
+            </div>
+          </div>
+
+          <!-- Right column: Password requirements -->
+          <div class="password-requirements">
+            <p class="requirements-title">Wymagania dotyczące hasła:</p>
+            <ul class="requirements-list">
+              <li [class.valid]="hasMinLength">
+                <mat-icon>{{ hasMinLength ? 'check_circle' : 'cancel' }}</mat-icon>
+                Co najmniej 8 znaków
+              </li>
+              <li [class.valid]="hasUpperCase">
+                <mat-icon>{{ hasUpperCase ? 'check_circle' : 'cancel' }}</mat-icon>
+                Wielka litera
+              </li>
+              <li [class.valid]="hasLowerCase">
+                <mat-icon>{{ hasLowerCase ? 'check_circle' : 'cancel' }}</mat-icon>
+                Mała litera
+              </li>
+              <li [class.valid]="hasDigit">
+                <mat-icon>{{ hasDigit ? 'check_circle' : 'cancel' }}</mat-icon>
+                Cyfra
+              </li>
+              <li [class.valid]="hasSpecialChar">
+                <mat-icon>{{ hasSpecialChar ? 'check_circle' : 'cancel' }}</mat-icon>
+                Znak specjalny
+              </li>
+            </ul>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
