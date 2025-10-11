@@ -119,8 +119,8 @@ namespace NetPcContacts.Infrastructure.Repositories
             {
                 var columnsSelector = new Dictionary<string, Expression<Func<Contact, object>>>
                 {
-                    { "FirstName", c => c.Name },
-                    { "LastName", c => c.Surname },
+                    { "Name", c => c.Name },
+                    { "Surname", c => c.Surname },
                     { "Category", c => c.Category.CategoryName },
                 };
 

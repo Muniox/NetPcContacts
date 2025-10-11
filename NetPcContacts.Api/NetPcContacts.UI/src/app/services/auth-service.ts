@@ -1,6 +1,6 @@
-import {inject, Injectable} from '@angular/core';
+import {computed, effect, inject, Injectable, signal} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {map, Observable} from 'rxjs';
+import {map, Observable, tap} from 'rxjs';
 
 import {environment} from '../../environments/environment';
 import {LoginRequest, LoginResponse} from '../models';
@@ -10,31 +10,76 @@ import {LoginRequest, LoginResponse} from '../models';
   providedIn: 'root'
 })
 export class AuthService {
-  http = inject(HttpClient);
-  apiUrl = environment.apiUrl;
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl;
+
+  // Signals for state management
+  private readonly accessTokenSignal = signal<string | null>(this.getAccessTokenFromStorage());
+  private readonly refreshTokenSignal = signal<string | null>(this.getRefreshTokenFromCookie());
+
+  // Public computed signals
+  readonly isLoggedIn = computed(() => !!this.accessTokenSignal());
+  readonly accessToken = computed(() => this.accessTokenSignal());
+
+  constructor() {
+    // Sync accessToken changes to localStorage
+    effect(() => {
+      const token = this.accessTokenSignal();
+      if (token) {
+        localStorage.setItem('accessToken', token);
+      } else {
+        localStorage.removeItem('accessToken');
+      }
+    });
+
+    // Sync refreshToken changes to cookie
+    effect(() => {
+      const token = this.refreshTokenSignal();
+      if (token) {
+        document.cookie = `refreshToken=${token}; path=/identity/refresh; SameSite=Strict`;
+      } else {
+        document.cookie = 'refreshToken=; path=/identity/refresh';
+      }
+    });
+  }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/identity/login`, credentials)
-      .pipe(map(response => {
-        localStorage.setItem('accessToken', response.accessToken);
-        document.cookie = `refreshToken=${response.refreshToken}; path=/identity/refresh;`;
-        return response;
-      }))
+      .pipe(
+        tap(response => {
+          this.accessTokenSignal.set(response.accessToken);
+          this.refreshTokenSignal.set(response.refreshToken);
+        })
+      );
   }
 
   refreshToken(): Observable<LoginResponse> {
-    const refreshToken = this.getRefreshTokenFromCookie();
+    const refreshToken = this.refreshTokenSignal();
+
+    if (!refreshToken) {
+      throw new Error('No refresh token available');
+    }
 
     return this.http.post<LoginResponse>(`${this.apiUrl}/identity/refresh`, {refreshToken})
-      .pipe(map(response => {
-        localStorage.setItem('accessToken', response.accessToken);
-        document.cookie = `refreshToken=${response.refreshToken}; path=/identity/refresh;`;
-        return response;
-      }))
+      .pipe(
+        tap(response => {
+          this.accessTokenSignal.set(response.accessToken);
+          this.refreshTokenSignal.set(response.refreshToken);
+        })
+      );
+  }
+
+  logout(): void {
+    this.accessTokenSignal.set(null);
+    this.refreshTokenSignal.set(null);
+  }
+
+  private getAccessTokenFromStorage(): string | null {
+    return localStorage.getItem('accessToken');
   }
 
   private getRefreshTokenFromCookie(): string | null {
-    const cookieString = document.cookie
+    const cookieString = document.cookie;
     const cookieArray = cookieString.split('; ');
 
     for (const cookie of cookieArray) {
@@ -46,13 +91,5 @@ export class AuthService {
     }
 
     return null;
-  }
-
-  logout(): void {
-    localStorage.removeItem('accessToken');
-  }
-
-  isLoggedIn(): boolean {
-    return !!localStorage.getItem('accessToken');
   }
 }
