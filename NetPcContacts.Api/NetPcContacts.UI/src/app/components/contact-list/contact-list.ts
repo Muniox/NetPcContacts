@@ -38,29 +38,39 @@ import {ContactDialog} from '../contact-dialog/contact-dialog';
   ],
   template: `
     <div class="container mx-auto px-4 py-8 max-w-7xl">
-      <div class="header-section">
-        <h1 class="mat-headline-4">Lista Kontaktów</h1>
-        @if (authService.isLoggedIn()) {
-          <button mat-fab color="primary" class="add-button" (click)="openAddContactDialog()" aria-label="Dodaj kontakt">
-            <mat-icon>add</mat-icon>
-          </button>
-        }
-      </div>
+      <!-- Title -->
+      <h1 class="page-title">Lista Kontaktów</h1>
 
-      <!-- Search bar -->
-      <mat-card class="mb-6">
-        <mat-card-content class="pt-4">
-          <mat-form-field class="w-full" appearance="outline">
-            <mat-label>Szukaj</mat-label>
-            <input
-              matInput
-              [formControl]="searchControl"
-              placeholder="Imię, nazwisko lub email"
-            />
-            <mat-icon matPrefix>search</mat-icon>
-          </mat-form-field>
-        </mat-card-content>
-      </mat-card>
+      <!-- Top action bar with search and add button -->
+      @if (!contactService.loading()) {
+        <div class="top-action-bar">
+          <div class="action-content">
+            <!-- Add button (visible only for logged in users) -->
+            @if (authService.isLoggedIn()) {
+              <button mat-raised-button color="primary" class="add-button" (click)="openAddContactDialog()">
+                <mat-icon>add</mat-icon>
+                Dodaj Kontakt
+              </button>
+            }
+
+            <!-- Search input -->
+            <div class="search-container">
+              <mat-form-field class="search-field" appearance="outline">
+                <mat-label>Szukaj</mat-label>
+                <input
+                  matInput
+                  [formControl]="searchControl"
+                  placeholder="Imię, nazwisko lub email"
+                />
+                <mat-icon matPrefix>search</mat-icon>
+              </mat-form-field>
+              <button mat-raised-button color="accent" class="search-button" (click)="onSearch()">
+                Szukaj
+              </button>
+            </div>
+          </div>
+        </div>
+      }
 
       <!-- Loading spinner -->
       @if (contactService.loading()) {
@@ -174,18 +184,62 @@ import {ContactDialog} from '../contact-dialog/contact-dialog';
     </div>
   `,
   styles: [`
-    .header-section {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    .page-title {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 32px;
+      color: theme('colors.blue-primary.30');
+    }
+
+    .top-action-bar {
       margin-bottom: 24px;
+      padding: 16px;
+      background-color: theme('colors.azure-neutral.99');
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .search-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-field {
+      width: 455px;
+      max-width: 455px;
+      min-width: 325px;
+      margin-bottom: 0;
+    }
+
+    ::ng-deep .search-field .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+
+    .search-button {
+      height: 56px;
+      padding: 0 32px;
+      white-space: nowrap;
     }
 
     .add-button {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 1000;
+      white-space: nowrap;
+      height: 56px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .add-button mat-icon {
+      margin: 0;
     }
 
     .icon-sm {
@@ -209,15 +263,32 @@ import {ContactDialog} from '../contact-dialog/contact-dialog';
     }
 
     @media (max-width: 768px) {
-      .header-section {
+      .page-title {
+        font-size: 2rem;
+      }
+
+      .action-content {
         flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
+        align-items: stretch;
+      }
+
+      .search-container {
+        flex-direction: column;
+      }
+
+      .search-field {
+        min-width: unset;
+        max-width: unset;
+        width: 100%;
+      }
+
+      .search-button {
+        width: 100%;
       }
 
       .add-button {
-        bottom: 16px;
-        right: 16px;
+        width: 100%;
+        justify-content: center;
       }
     }
   `],
@@ -262,16 +333,14 @@ export class ContactList implements OnInit {
   });
 
   constructor() {
-    // Setup search with debounce
-    this.searchControl.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged()
-      )
-      .subscribe(value => {
-        this.contactService.setSearchPhrase(value || '');
-        this.contactService.loadContacts();
-      });
+    // No automatic search - only on button click
+  }
+
+  onSearch(): void {
+    const searchValue = this.searchControl.value || '';
+    this.contactService.setSearchPhrase(searchValue);
+    this.contactService.loadContacts();
+    this.searchControl.setValue('');
   }
 
   ngOnInit(): void {
