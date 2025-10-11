@@ -114,8 +114,8 @@ import {CreateContactRequest} from '../../models';
           <mat-form-field appearance="outline">
             <mat-label>Kategoria</mat-label>
             <mat-select formControlName="categoryId" required>
-              <mat-option [value]="1">Prywatny</mat-option>
-              <mat-option [value]="2">Służbowy</mat-option>
+              <mat-option [value]="1">Służbowy</mat-option>
+              <mat-option [value]="2">Prywatny</mat-option>
               <mat-option [value]="3">Inny</mat-option>
             </mat-select>
             @if (contactForm.get('categoryId')?.hasError('required') && contactForm.get('categoryId')?.touched) {
@@ -124,13 +124,13 @@ import {CreateContactRequest} from '../../models';
           </mat-form-field>
 
           <!-- Subcategory (for Business) -->
-          @if (contactForm.get('categoryId')?.value === 2) {
+          @if (contactForm.get('categoryId')?.value === 1) {
             <mat-form-field appearance="outline">
               <mat-label>Podkategoria *</mat-label>
               <mat-select formControlName="subcategoryId" required>
-                <mat-option [value]="1">Szef</mat-option>
-                <mat-option [value]="2">Klient</mat-option>
-                <mat-option [value]="3">Dostawca</mat-option>
+                <mat-option [value]="1">szef</mat-option>
+                <mat-option [value]="2">współpracownik</mat-option>
+                <mat-option [value]="3">klient</mat-option>
               </mat-select>
               @if (contactForm.get('subcategoryId')?.hasError('required') && contactForm.get('subcategoryId')?.touched) {
                 <mat-error>Podkategoria jest wymagana dla kontaktów służbowych</mat-error>
@@ -267,8 +267,8 @@ export class ContactDialog {
       subcategoryIdControl?.clearValidators();
       customSubcategoryControl?.clearValidators();
 
-      // Category 2 = "Służbowy" - subcategoryId is REQUIRED
-      if (categoryId === 2) {
+      // Category 1 = "Służbowy" - subcategoryId is REQUIRED
+      if (categoryId === 1) {
         subcategoryIdControl?.setValidators([Validators.required]);
       }
       // Category 3 = "Inny" - customSubcategory is REQUIRED
@@ -303,7 +303,7 @@ export class ContactDialog {
       phoneNumber: formValue.phoneNumber,
       birthDate: this.formatDate(formValue.birthDate),
       categoryId: formValue.categoryId,
-      subcategoryId: formValue.categoryId === 2 ? formValue.subcategoryId : null,
+      subcategoryId: formValue.categoryId === 1 ? formValue.subcategoryId : null,
       customSubcategory: formValue.categoryId === 3 ? formValue.customSubcategory : null
     };
 

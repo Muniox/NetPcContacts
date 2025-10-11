@@ -36,9 +36,9 @@ export class AuthService {
     effect(() => {
       const token = this.refreshTokenSignal();
       if (token) {
-        document.cookie = `refreshToken=${token}; path=/identity/refresh; SameSite=Strict`;
+        document.cookie = `refreshToken=${token}`;
       } else {
-        document.cookie = 'refreshToken=; path=/identity/refresh';
+        document.cookie = 'refreshToken=;';
       }
     });
   }

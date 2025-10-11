@@ -18,6 +18,7 @@ import {ContactService} from '../../services/contact.service';
 import {AuthService} from '../../services/auth-service';
 import {SortDirection} from '../../models';
 import {ContactDialog} from '../contact-dialog/contact-dialog';
+import {ContactDetailsDialog} from '../contact-details-dialog/contact-details-dialog';
 
 @Component({
   selector: 'app-contact-list',
@@ -63,9 +64,17 @@ import {ContactDialog} from '../contact-dialog/contact-dialog';
                   placeholder="Imię, nazwisko lub email"
                 />
                 <mat-icon matPrefix>search</mat-icon>
+                @if (searchControl.value) {
+                  <button mat-icon-button matSuffix (click)="onClearSearch()" type="button" aria-label="Wyczyść wyszukiwanie">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                }
               </mat-form-field>
               <button mat-raised-button color="accent" class="search-button" (click)="onSearch()">
                 Szukaj
+              </button>
+              <button mat-raised-button class="clear-button" (click)="onClearSearch()">
+                Wyczyść
               </button>
             </div>
           </div>
@@ -144,7 +153,7 @@ import {ContactDialog} from '../contact-dialog/contact-dialog';
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Akcje</th>
               <td mat-cell *matCellDef="let contact">
-                <button mat-icon-button color="primary" [attr.aria-label]="'Zobacz szczegóły kontaktu ' + contact.name">
+                <button mat-icon-button color="primary" (click)="openContactDetails(contact.id)" [attr.aria-label]="'Zobacz szczegóły kontaktu ' + contact.name">
                   <mat-icon>visibility</mat-icon>
                 </button>
               </td>
@@ -229,6 +238,12 @@ import {ContactDialog} from '../contact-dialog/contact-dialog';
       white-space: nowrap;
     }
 
+    .clear-button {
+      height: 56px;
+      padding: 0 32px;
+      white-space: nowrap;
+    }
+
     .add-button {
       white-space: nowrap;
       height: 56px;
@@ -282,7 +297,8 @@ import {ContactDialog} from '../contact-dialog/contact-dialog';
         width: 100%;
       }
 
-      .search-button {
+      .search-button,
+      .clear-button {
         width: 100%;
       }
 
@@ -340,7 +356,12 @@ export class ContactList implements OnInit {
     const searchValue = this.searchControl.value || '';
     this.contactService.setSearchPhrase(searchValue);
     this.contactService.loadContacts();
+  }
+
+  onClearSearch(): void {
     this.searchControl.setValue('');
+    this.contactService.setSearchPhrase('');
+    this.contactService.loadContacts();
   }
 
   ngOnInit(): void {
@@ -394,6 +415,14 @@ export class ContactList implements OnInit {
           verticalPosition: 'top'
         });
       }
+    });
+  }
+
+  openContactDetails(contactId: number): void {
+    this.dialog.open(ContactDetailsDialog, {
+      width: '650px',
+      maxWidth: '90vw',
+      data: { contactId }
     });
   }
 }
