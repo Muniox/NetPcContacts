@@ -44,11 +44,11 @@ export class AuthService {
   }
 
   register(credentials: RegisterRequest): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/identity/register`, credentials);
+    return this.http.post<void>(`${this.apiUrl}/api/identity/register`, credentials);
   }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/identity/login`, credentials)
+    return this.http.post<LoginResponse>(`${this.apiUrl}/api/identity/login`, credentials)
       .pipe(
         tap(response => {
           this.accessTokenSignal.set(response.accessToken);
@@ -64,7 +64,7 @@ export class AuthService {
       throw new Error('No refresh token available');
     }
 
-    return this.http.post<LoginResponse>(`${this.apiUrl}/identity/refresh`, {refreshToken})
+    return this.http.post<LoginResponse>(`${this.apiUrl}/api/identity/refresh`, {refreshToken})
       .pipe(
         tap(response => {
           this.accessTokenSignal.set(response.accessToken);
