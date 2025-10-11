@@ -3,7 +3,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, tap} from 'rxjs';
 
 import {environment} from '../../environments/environment';
-import {BasicContact, Contact, ContactQuery, PagedResult, SortDirection} from '../models';
+import {BasicContact, Contact, ContactQuery, CreateContactRequest, PagedResult, SortDirection} from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -76,6 +76,16 @@ export class ContactService {
 
   getContactById(id: number): Observable<Contact> {
     return this.http.get<Contact>(`${this.apiUrl}/${id}`);
+  }
+
+  createContact(request: CreateContactRequest): Observable<number> {
+    return this.http.post<number>(this.apiUrl, request)
+      .pipe(
+        tap(() => {
+          // Reload contacts after successful creation
+          this.loadContacts();
+        })
+      );
   }
 
   // Helper methods to update query parameters

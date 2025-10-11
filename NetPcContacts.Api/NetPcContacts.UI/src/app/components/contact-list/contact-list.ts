@@ -11,11 +11,13 @@ import {MatSortModule, Sort, SortDirection as MatSortDirection} from '@angular/m
 import {MatCardModule} from '@angular/material/card';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatDialog, MatDialogModule} from '@angular/material/dialog';
 import {debounceTime, distinctUntilChanged} from 'rxjs';
 
 import {ContactService} from '../../services/contact.service';
 import {AuthService} from '../../services/auth-service';
 import {SortDirection} from '../../models';
+import {ContactDialog} from '../contact-dialog/contact-dialog';
 
 @Component({
   selector: 'app-contact-list',
@@ -31,11 +33,19 @@ import {SortDirection} from '../../models';
     MatSortModule,
     MatCardModule,
     MatChipsModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatDialogModule
   ],
   template: `
     <div class="container mx-auto px-4 py-8 max-w-7xl">
-      <h1 class="mat-headline-4 mb-6">Lista Kontaktów</h1>
+      <div class="header-section">
+        <h1 class="mat-headline-4">Lista Kontaktów</h1>
+        @if (authService.isLoggedIn()) {
+          <button mat-fab color="primary" class="add-button" (click)="openAddContactDialog()" aria-label="Dodaj kontakt">
+            <mat-icon>add</mat-icon>
+          </button>
+        }
+      </div>
 
       <!-- Search bar -->
       <mat-card class="mb-6">
@@ -164,6 +174,20 @@ import {SortDirection} from '../../models';
     </div>
   `,
   styles: [`
+    .header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .add-button {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+    }
+
     .icon-sm {
       font-size: 18px;
       width: 18px;
@@ -183,12 +207,27 @@ import {SortDirection} from '../../models';
     .cursor-pointer:hover {
       background-color: rgba(0, 0, 0, 0.04);
     }
+
+    @media (max-width: 768px) {
+      .header-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+
+      .add-button {
+        bottom: 16px;
+        right: 16px;
+      }
+    }
   `],
   host: {}
 })
 export class ContactList implements OnInit {
   contactService = inject(ContactService);
   authService = inject(AuthService);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
@@ -268,5 +307,24 @@ export class ContactList implements OnInit {
       this.contactService.setSortDirection(direction);
       this.contactService.loadContacts();
     }
+  }
+
+  openAddContactDialog(): void {
+    const dialogRef = this.dialog.open(ContactDialog, {
+      width: '600px',
+      maxWidth: '90vw',
+      disableClose: false,
+      autoFocus: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.snackBar.open('Kontakt został dodany pomyślnie!', 'Zamknij', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top'
+        });
+      }
+    });
   }
 }
