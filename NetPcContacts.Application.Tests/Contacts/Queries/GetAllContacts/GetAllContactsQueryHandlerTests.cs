@@ -10,7 +10,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Queries.GetAllContacts
 {
     /// <summary>
     /// Testy jednostkowe dla GetAllContactsQueryHandler.
-    /// Sprawdzaj¹ poprawnoœæ pobierania stronicowanej listy kontaktów.
+    /// Sprawdzajï¿½ poprawnoï¿½ï¿½ pobierania stronicowanej listy kontaktï¿½w.
     /// </summary>
     public class GetAllContactsQueryHandlerTests
     {
@@ -31,7 +31,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Queries.GetAllContacts
         public async Task Handle_ReturnsPagedResultWithContacts()
         {
             // Arrange
-            var category = new Category { Id = 1, CategoryName = "S³u¿bowy" };
+            var category = new Category { Id = 1, CategoryName = "Sï¿½uï¿½bowy" };
             var contacts = new List<Contact>
             {
                 new Contact
@@ -90,17 +90,17 @@ namespace NetPcContacts.Application.Tests.Contacts.Queries.GetAllContacts
 
             var firstContact = result.Items.First();
             firstContact.Id.Should().Be(1);
-            firstContact.FirstName.Should().Be("Jan");
-            firstContact.LastName.Should().Be("Kowalski");
+            firstContact.Name.Should().Be("Jan");
+            firstContact.Surname.Should().Be("Kowalski");
             firstContact.Email.Should().Be("jan@example.com");
-            firstContact.Category.Should().Be("S³u¿bowy");
+            firstContact.Category.Should().Be("Sï¿½uï¿½bowy");
         }
 
         [Fact]
         public async Task Handle_WithSearchPhrase_FiltersContacts()
         {
             // Arrange
-            var category = new Category { Id = 1, CategoryName = "S³u¿bowy" };
+            var category = new Category { Id = 1, CategoryName = "Sï¿½uï¿½bowy" };
             var filteredContacts = new List<Contact>
             {
                 new Contact
@@ -192,7 +192,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Queries.GetAllContacts
 
             // Assert
             result.TotalPages.Should().Be(2); // 15 items / 10 per page = 2 pages
-            result.ItemsFrom.Should().Be(11); // strona 2, pocz¹tek od elementu 11
+            result.ItemsFrom.Should().Be(11); // strona 2, poczï¿½tek od elementu 11
             result.ItemsTo.Should().Be(20); // ItemsFrom + PageSize - 1 = 11 + 10 - 1 = 20
         }
 
@@ -200,7 +200,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Queries.GetAllContacts
         public async Task Handle_WithSorting_PassesSortParametersToRepository()
         {
             // Arrange
-            var category = new Category { Id = 1, CategoryName = "S³u¿bowy" };
+            var category = new Category { Id = 1, CategoryName = "Sï¿½uï¿½bowy" };
             var sortedContacts = new List<Contact>
             {
                 new Contact
@@ -320,13 +320,13 @@ namespace NetPcContacts.Application.Tests.Contacts.Queries.GetAllContacts
             // Assert
             var dto = result.Items.First();
             dto.Id.Should().Be(5);
-            dto.FirstName.Should().Be("Test");
-            dto.LastName.Should().Be("User");
+            dto.Name.Should().Be("Test");
+            dto.Surname.Should().Be("User");
             dto.Email.Should().Be("test.user@example.com");
             dto.PhoneNumber.Should().Be("+48 555 666 777");
             dto.Category.Should().Be("Inny");
 
-            // SprawdŸ, ¿e PasswordHash nie jest w DTO
+            // Sprawdï¿½, ï¿½e PasswordHash nie jest w DTO
             var dtoProperties = dto.GetType().GetProperties();
             dtoProperties.Should().NotContain(p => p.Name == "PasswordHash" || p.Name == "Password");
         }

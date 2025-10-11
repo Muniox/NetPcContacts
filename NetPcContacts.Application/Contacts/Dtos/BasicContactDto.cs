@@ -13,12 +13,12 @@
         /// <summary>
         /// Imię kontaktu.
         /// </summary>
-        public string FirstName { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Nazwisko kontaktu.
         /// </summary>
-        public string LastName { get; set; } = string.Empty;
+        public string Surname { get; set; } = string.Empty;
 
         /// <summary>
         /// Adres email kontaktu.

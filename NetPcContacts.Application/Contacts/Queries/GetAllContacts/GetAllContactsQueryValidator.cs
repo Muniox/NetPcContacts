@@ -18,8 +18,8 @@ namespace NetPcContacts.Application.Contacts.Queries.GetAllContacts
         /// Dozwolone nazwy kolumn, po których można sortować wyniki.
         /// </summary>
         private string[] allowedSortByColumnNames = [
-            nameof(BasicContactDto.FirstName),
-            nameof(BasicContactDto.LastName),
+            nameof(BasicContactDto.Name),
+            nameof(BasicContactDto.Surname),
             nameof(BasicContactDto.Category)
             ];
 

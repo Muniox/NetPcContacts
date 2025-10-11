@@ -24,5 +24,11 @@
       <ProjectReference Include="..\NetPcContacts.Application\NetPcContacts.Application.csproj" />
       <ProjectReference Include="..\NetPcContacts.Infrastructure\NetPcContacts.Infrastructure.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="NetPcContacts.UI\src\app\components\" />
+      <Folder Include="NetPcContacts.UI\src\app\interceptors\" />
+      <Folder Include="NetPcContacts.UI\src\app\services\" />
+    </ItemGroup>
     
 </Project>

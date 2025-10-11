@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.Collections;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
 using NetPcContacts.Api.Middlewares;
 using System.Reflection;
@@ -72,14 +73,18 @@ namespace NetPcContacts.Api.Extensions
                 });
             });
 
+            // Get allowed origins from appsettings.json
+            var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+            var defaultOrigin = new string[] { "http://localhost:4200" };
+            
             // CORS
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("CorsPolicy", builder =>
+                options.AddPolicy("CorsPolicy", policy =>
                 {
-                    builder.AllowAnyHeader()
+                    policy.AllowAnyHeader()
                     .AllowAnyMethod()
-                    .WithOrigins("http://localhost") // TODO: zmienić (port) po dodaniu frontendu
+                    .WithOrigins(allowedOrigins ?? defaultOrigin)
                     .AllowCredentials();
                 });
             });

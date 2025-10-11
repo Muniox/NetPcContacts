@@ -16,7 +16,7 @@ namespace NetPcContacts.Api.Tests.Controllers
 {
     /// <summary>
     /// Testy jednostkowe dla ContactController.
-    /// Testuj¹ poprawnoœæ obs³ugi ¿¹dañ HTTP i komunikacjê z MediatR.
+    /// Testujï¿½ poprawnoï¿½ï¿½ obsï¿½ugi ï¿½ï¿½daï¿½ HTTP i komunikacjï¿½ z MediatR.
     /// </summary>
     public class ContactControllerTests
     {
@@ -130,7 +130,7 @@ namespace NetPcContacts.Api.Tests.Controllers
             var contactId = 10;
             var command = new UpdateContactCommand
             {
-                Id = 0, // bêdzie nadpisane przez route
+                Id = 0, // bï¿½dzie nadpisane przez route
                 Name = "Test",
                 Surname = "User",
                 Email = "test@example.com",
@@ -170,7 +170,7 @@ namespace NetPcContacts.Api.Tests.Controllers
                 Email = "jan.kowalski@example.com",
                 PhoneNumber = "+48 123 456 789",
                 BirthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
-                CategoryName = "S³u¿bowy",
+                CategoryName = "Sï¿½uï¿½bowy",
                 SubcategoryName = "Szef"
             };
 
@@ -251,11 +251,11 @@ namespace NetPcContacts.Api.Tests.Controllers
                     new BasicContactDto
                     {
                         Id = 1,
-                        FirstName = "Jan",
-                        LastName = "Kowalski",
+                        Name = "Jan",
+                        Surname = "Kowalski",
                         Email = "jan@example.com",
                         PhoneNumber = "123456789",
-                        Category = "S³u¿bowy"
+                        Category = "Sï¿½uï¿½bowy"
                     }
                 },
                 1, // totalCount

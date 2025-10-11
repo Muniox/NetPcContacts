@@ -56,8 +56,8 @@ namespace NetPcContacts.Application.Contacts.Queries.GetAllContacts
             var contactsDtos = contacts.Select(c => new BasicContactDto
             {
                 Id = c.Id,
-                FirstName = c.Name,
-                LastName = c.Surname,
+                Name = c.Name,
+                Surname = c.Surname,
                 Email = c.Email,
                 PhoneNumber = c.PhoneNumber,
                 Category = c.Category?.CategoryName ?? "Unknown"
