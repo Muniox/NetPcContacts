@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {map, Observable, tap} from 'rxjs';
 
 import {environment} from '../../environments/environment';
-import {LoginRequest, LoginResponse} from '../models';
+import {LoginRequest, LoginResponse, RegisterRequest} from '../models';
 
 
 @Injectable({
@@ -41,6 +41,10 @@ export class AuthService {
         document.cookie = 'refreshToken=; path=/identity/refresh';
       }
     });
+  }
+
+  register(credentials: RegisterRequest): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/identity/register`, credentials);
   }
 
   login(credentials: LoginRequest): Observable<LoginResponse> {

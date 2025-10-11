@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, ViewChild} from '@angular/core';
+import {Component, inject, OnInit, ViewChild, computed} from '@angular/core';
 import {FormControl, ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
@@ -7,10 +7,14 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatIconModule} from '@angular/material/icon';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginator, MatPaginatorModule, PageEvent} from '@angular/material/paginator';
-import {MatSortModule, Sort} from '@angular/material/sort';
+import {MatSortModule, Sort, SortDirection as MatSortDirection} from '@angular/material/sort';
+import {MatCardModule} from '@angular/material/card';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {debounceTime, distinctUntilChanged} from 'rxjs';
 
 import {ContactService} from '../../services/contact.service';
+import {AuthService} from '../../services/auth-service';
 import {SortDirection} from '../../models';
 
 @Component({
@@ -24,73 +28,74 @@ import {SortDirection} from '../../models';
     MatIconModule,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule
+    MatSortModule,
+    MatCardModule,
+    MatChipsModule,
+    MatSnackBarModule
   ],
   template: `
-    <div class="container mx-auto px-4 py-8">
-      <h1 class="text-3xl font-bold mb-8 text-gray-800">Lista Kontaktów</h1>
+    <div class="container mx-auto px-4 py-8 max-w-7xl">
+      <h1 class="mat-headline-4 mb-6">Lista Kontaktów</h1>
 
       <!-- Search bar -->
-      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-        <mat-form-field class="w-full" appearance="outline">
-          <mat-label>Szukaj</mat-label>
-          <input
-            matInput
-            [formControl]="searchControl"
-            placeholder="Imię, nazwisko lub email"
-          />
-          <mat-icon matPrefix>search</mat-icon>
-        </mat-form-field>
-      </div>
+      <mat-card class="mb-6">
+        <mat-card-content class="pt-4">
+          <mat-form-field class="w-full" appearance="outline">
+            <mat-label>Szukaj</mat-label>
+            <input
+              matInput
+              [formControl]="searchControl"
+              placeholder="Imię, nazwisko lub email"
+            />
+            <mat-icon matPrefix>search</mat-icon>
+          </mat-form-field>
+        </mat-card-content>
+      </mat-card>
 
       <!-- Loading spinner -->
       @if (contactService.loading()) {
         <div class="flex justify-center items-center py-12">
-          <mat-spinner></mat-spinner>
-        </div>
-      }
-
-      <!-- Error message -->
-      @if (contactService.error()) {
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
-          <strong>Błąd:</strong> {{ contactService.error() }}
+          <mat-spinner color="primary"></mat-spinner>
         </div>
       }
 
       <!-- Table -->
       @if (!contactService.loading() && contactService.contacts()) {
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <mat-card>
           <table
             mat-table
             [dataSource]="contactService.contacts()!.items"
             matSort
+            [matSortActive]="currentSortColumn()"
+            [matSortDirection]="currentSortDirection()"
+            matSortDisableClear
             (matSortChange)="onSortChange($event)"
             class="w-full"
           >
             <!-- ID Column -->
             <ng-container matColumnDef="id">
-              <th mat-header-cell *matHeaderCellDef class="bg-gray-50">ID</th>
+              <th mat-header-cell *matHeaderCellDef>ID</th>
               <td mat-cell *matCellDef="let contact">{{ contact.id }}</td>
             </ng-container>
 
             <!-- Name Column -->
             <ng-container matColumnDef="name">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header class="bg-gray-50">Imię</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Imię</th>
               <td mat-cell *matCellDef="let contact">{{ contact.name }}</td>
             </ng-container>
 
             <!-- Surname Column -->
             <ng-container matColumnDef="surname">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header class="bg-gray-50">Nazwisko</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Nazwisko</th>
               <td mat-cell *matCellDef="let contact">{{ contact.surname }}</td>
             </ng-container>
 
             <!-- Email Column -->
             <ng-container matColumnDef="email">
-              <th mat-header-cell *matHeaderCellDef class="bg-gray-50">Email</th>
+              <th mat-header-cell *matHeaderCellDef>Email</th>
               <td mat-cell *matCellDef="let contact">
-                <div class="flex items-center">
-                  <mat-icon class="mr-2 text-gray-500 text-sm">email</mat-icon>
+                <div class="flex items-center gap-2">
+                  <mat-icon class="icon-sm">email</mat-icon>
                   {{ contact.email }}
                 </div>
               </td>
@@ -98,10 +103,10 @@ import {SortDirection} from '../../models';
 
             <!-- Phone Column -->
             <ng-container matColumnDef="phoneNumber">
-              <th mat-header-cell *matHeaderCellDef class="bg-gray-50">Telefon</th>
+              <th mat-header-cell *matHeaderCellDef>Telefon</th>
               <td mat-cell *matCellDef="let contact">
-                <div class="flex items-center">
-                  <mat-icon class="mr-2 text-gray-500 text-sm">phone</mat-icon>
+                <div class="flex items-center gap-2">
+                  <mat-icon class="icon-sm">phone</mat-icon>
                   {{ contact.phoneNumber }}
                 </div>
               </td>
@@ -109,29 +114,27 @@ import {SortDirection} from '../../models';
 
             <!-- Category Column -->
             <ng-container matColumnDef="category">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header class="bg-gray-50">Kategoria</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>Kategoria</th>
               <td mat-cell *matCellDef="let contact">
-                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                  {{ contact.category }}
-                </span>
+                <mat-chip>{{ contact.category }}</mat-chip>
               </td>
             </ng-container>
 
             <!-- Actions Column -->
             <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef class="bg-gray-50">Akcje</th>
+              <th mat-header-cell *matHeaderCellDef>Akcje</th>
               <td mat-cell *matCellDef="let contact">
-                <button mat-icon-button color="primary">
+                <button mat-icon-button color="primary" [attr.aria-label]="'Zobacz szczegóły kontaktu ' + contact.name">
                   <mat-icon>visibility</mat-icon>
                 </button>
               </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
             <tr
               mat-row
-              *matRowDef="let row; columns: displayedColumns;"
-              class="hover:bg-gray-50 cursor-pointer"
+              *matRowDef="let row; columns: displayedColumns();"
+              class="cursor-pointer"
             ></tr>
           </table>
 
@@ -143,55 +146,81 @@ import {SortDirection} from '../../models';
             [pageSizeOptions]="[5, 10, 15, 30]"
             (page)="onPageChange($event)"
             showFirstLastButtons
-            class="border-t"
           >
           </mat-paginator>
-        </div>
+        </mat-card>
       }
 
       <!-- Empty state -->
       @if (!contactService.loading() && contactService.contacts() && contactService.contacts()!.items.length === 0) {
-        <div class="text-center py-12 bg-white rounded-lg shadow-md">
-          <mat-icon class="text-6xl text-gray-400 mb-4">person_off</mat-icon>
-          <h2 class="text-2xl font-semibold text-gray-600 mb-2">Brak kontaktów</h2>
-          <p class="text-gray-500">Nie znaleziono żadnych kontaktów spełniających kryteria wyszukiwania.</p>
-        </div>
+        <mat-card>
+          <mat-card-content class="text-center py-12">
+            <mat-icon class="empty-state-icon mb-4" color="disabled">person_off</mat-icon>
+            <h2 class="mat-headline-6 mb-2">Brak kontaktów</h2>
+            <p class="mat-body-1">Nie znaleziono żadnych kontaktów spełniających kryteria wyszukiwania.</p>
+          </mat-card-content>
+        </mat-card>
       }
     </div>
   `,
   styles: [`
-    ::ng-deep .mat-mdc-table {
-      background: transparent;
+    .icon-sm {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
     }
 
-    ::ng-deep .mat-mdc-header-cell {
-      font-weight: 600;
-      color: #374151;
+    .empty-state-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
     }
 
-    ::ng-deep .mat-mdc-cell {
-      color: #4b5563;
+    .cursor-pointer {
+      cursor: pointer;
     }
 
-    ::ng-deep .mat-mdc-row:hover {
-      background-color: #f9fafb;
+    .cursor-pointer:hover {
+      background-color: rgba(0, 0, 0, 0.04);
     }
   `],
   host: {}
 })
 export class ContactList implements OnInit {
   contactService = inject(ContactService);
+  authService = inject(AuthService);
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  // Table columns
-  displayedColumns: string[] = ['id', 'name', 'surname', 'email', 'phoneNumber', 'category', 'actions'];
+  // Table columns - computed based on auth state
+  displayedColumns = computed(() => {
+    const baseColumns = ['id', 'name', 'surname', 'email', 'phoneNumber', 'category'];
+    return this.authService.isLoggedIn()
+      ? [...baseColumns, 'actions']
+      : baseColumns;
+  });
 
   // Form controls
   searchControl = new FormControl('');
 
   // Expose SortDirection enum to template
   SortDirection = SortDirection;
+
+  // Computed properties for MatSort bindings
+  currentSortColumn = computed(() => {
+    const sortBy = this.contactService.sortBy();
+    const columnMap: { [key: string]: string } = {
+      'Name': 'name',
+      'Surname': 'surname',
+      'Category': 'category'
+    };
+    return sortBy ? columnMap[sortBy] : '';
+  });
+
+  currentSortDirection = computed((): MatSortDirection => {
+    const direction = this.contactService.sortDirection();
+    return direction === SortDirection.Ascending ? 'asc' : 'desc';
+  });
 
   constructor() {
     // Setup search with debounce
@@ -220,6 +249,8 @@ export class ContactList implements OnInit {
   onSortChange(sort: Sort): void {
     if (!sort.active || sort.direction === '') {
       this.contactService.setSortBy(undefined);
+      this.contactService.setSortDirection(SortDirection.Ascending);
+      this.contactService.loadContacts();
       return;
     }
 
@@ -232,10 +263,9 @@ export class ContactList implements OnInit {
 
     const apiSortField = sortFieldMap[sort.active];
     if (apiSortField) {
+      const direction = sort.direction === 'asc' ? SortDirection.Ascending : SortDirection.Descending;
       this.contactService.setSortBy(apiSortField);
-      this.contactService.setSortDirection(
-        sort.direction === 'asc' ? SortDirection.Ascending : SortDirection.Descending
-      );
+      this.contactService.setSortDirection(direction);
       this.contactService.loadContacts();
     }
   }
