@@ -1,4 +1,4 @@
-﻿# Funkcjonalności:
+﻿ # Funkcjonalności:
 ## 1. Logowanie:
 	Funkcjonalność z pkt. 2 dostępna jest dla niezalogowanego użytkownika, pozostałe wymagają zalogowania.
 ## 2. Przeglądanie listy kontaktów:

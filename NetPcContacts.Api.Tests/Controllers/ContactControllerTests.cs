@@ -16,7 +16,7 @@ namespace NetPcContacts.Api.Tests.Controllers
 {
     /// <summary>
     /// Testy jednostkowe dla ContactController.
-    /// Testuj� poprawno�� obs�ugi ��da� HTTP i komunikacj� z MediatR.
+    /// Testują poprawność obsługi żądań HTTP i komunikację z MediatR.
     /// </summary>
     public class ContactControllerTests
     {
@@ -59,7 +59,7 @@ namespace NetPcContacts.Api.Tests.Controllers
             createdResult!.ActionName.Should().Be(nameof(ContactController.GetContact));
             createdResult.RouteValues.Should().ContainKey("id");
             createdResult.RouteValues!["id"].Should().Be(expectedContactId);
-            
+
             _mediatorMock.Verify(m => m.Send(command, It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -86,10 +86,10 @@ namespace NetPcContacts.Api.Tests.Controllers
 
             // Assert
             _mediatorMock.Verify(m => m.Send(
-                It.Is<CreateContactCommand>(c => 
-                    c.Name == command.Name && 
+                It.Is<CreateContactCommand>(c =>
+                    c.Name == command.Name &&
                     c.Email == command.Email),
-                It.IsAny<CancellationToken>()), 
+                It.IsAny<CancellationToken>()),
                 Times.Once);
         }
 
@@ -98,11 +98,11 @@ namespace NetPcContacts.Api.Tests.Controllers
         #region UpdateContact Tests
 
         [Fact]
-        public async Task UpdateContact_ForValidCommand_ReturnsNoContent()
+        public async Task UpdateContact_ForValidDto_ReturnsNoContent()
         {
             // Arrange
             var contactId = 5;
-            var command = new UpdateContactCommand
+            var dto = new UpdateContactDto
             {
                 Name = "Jan",
                 Surname = "Kowalski Updated",
@@ -117,38 +117,78 @@ namespace NetPcContacts.Api.Tests.Controllers
                 .Returns(Task.FromResult(Unit.Value));
 
             // Act
-            var result = await _controller.UpdateContact(contactId, command);
+            var result = await _controller.UpdateContact(contactId, dto);
 
             // Assert
             result.Should().BeOfType<NoContentResult>();
         }
 
         [Fact]
-        public async Task UpdateContact_SetsIdFromRoute()
+        public async Task UpdateContact_MapsDtoToCommandAndSetsIdFromRoute()
         {
             // Arrange
             var contactId = 10;
-            var command = new UpdateContactCommand
+            var dto = new UpdateContactDto
             {
-                Id = 0, // b�dzie nadpisane przez route
                 Name = "Test",
                 Surname = "User",
                 Email = "test@example.com",
+                Password = "NewP@ss123",
                 PhoneNumber = "123456789",
                 BirthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-20)),
-                CategoryId = 1
+                CategoryId = 1,
+                SubcategoryId = 2,
+                CustomSubcategory = null
             };
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateContactCommand>(), It.IsAny<CancellationToken>()))
                 .Returns(Task.FromResult(Unit.Value));
 
             // Act
-            await _controller.UpdateContact(contactId, command);
+            await _controller.UpdateContact(contactId, dto);
 
             // Assert
-            command.Id.Should().Be(contactId);
             _mediatorMock.Verify(m => m.Send(
-                It.Is<UpdateContactCommand>(c => c.Id == contactId),
+                It.Is<UpdateContactCommand>(c =>
+                    c.Id == contactId &&
+                    c.Name == dto.Name &&
+                    c.Surname == dto.Surname &&
+                    c.Email == dto.Email &&
+                    c.Password == dto.Password &&
+                    c.PhoneNumber == dto.PhoneNumber &&
+                    c.BirthDate == dto.BirthDate &&
+                    c.CategoryId == dto.CategoryId &&
+                    c.SubcategoryId == dto.SubcategoryId &&
+                    c.CustomSubcategory == dto.CustomSubcategory),
+                It.IsAny<CancellationToken>()),
+                Times.Once);
+        }
+
+        [Fact]
+        public async Task UpdateContact_WithNullPassword_SendsCommandWithNullPassword()
+        {
+            // Arrange
+            var contactId = 15;
+            var dto = new UpdateContactDto
+            {
+                Name = "Jan",
+                Surname = "Kowalski",
+                Email = "jan@example.com",
+                Password = null, // nie zmienia hasła
+                PhoneNumber = "123456789",
+                BirthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
+                CategoryId = 2
+            };
+
+            _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateContactCommand>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(Unit.Value));
+
+            // Act
+            await _controller.UpdateContact(contactId, dto);
+
+            // Assert
+            _mediatorMock.Verify(m => m.Send(
+                It.Is<UpdateContactCommand>(c => c.Password == null),
                 It.IsAny<CancellationToken>()),
                 Times.Once);
         }
@@ -170,7 +210,7 @@ namespace NetPcContacts.Api.Tests.Controllers
                 Email = "jan.kowalski@example.com",
                 PhoneNumber = "+48 123 456 789",
                 BirthDate = DateOnly.FromDateTime(DateTime.Today.AddYears(-30)),
-                CategoryName = "S�u�bowy",
+                CategoryName = "Służbowy",
                 SubcategoryName = "Szef"
             };
 
@@ -184,7 +224,7 @@ namespace NetPcContacts.Api.Tests.Controllers
             result.Result.Should().BeOfType<OkObjectResult>();
             var okResult = result.Result as OkObjectResult;
             okResult!.Value.Should().BeEquivalentTo(contactDto);
-            
+
             _mediatorMock.Verify(m => m.Send(
                 It.Is<GetContactByIdQuery>(q => q.ContactId == contactId),
                 It.IsAny<CancellationToken>()),
@@ -255,7 +295,7 @@ namespace NetPcContacts.Api.Tests.Controllers
                         Surname = "Kowalski",
                         Email = "jan@example.com",
                         PhoneNumber = "123456789",
-                        Category = "S�u�bowy"
+                        Category = "Służbowy"
                     }
                 },
                 1, // totalCount
@@ -273,7 +313,7 @@ namespace NetPcContacts.Api.Tests.Controllers
             result.Result.Should().BeOfType<OkObjectResult>();
             var okResult = result.Result as OkObjectResult;
             okResult!.Value.Should().BeEquivalentTo(pagedResult);
-            
+
             _mediatorMock.Verify(m => m.Send(query, It.IsAny<CancellationToken>()), Times.Once);
         }
 
@@ -376,8 +416,8 @@ namespace NetPcContacts.Api.Tests.Controllers
 
             // Assert
             _mediatorMock.Verify(m => m.Send(
-                It.Is<GetAllContactsQuery>(q => 
-                    q.SortBy == sortBy && 
+                It.Is<GetAllContactsQuery>(q =>
+                    q.SortBy == sortBy &&
                     q.SortDirection == sortDirection),
                 It.IsAny<CancellationToken>()),
                 Times.Once);

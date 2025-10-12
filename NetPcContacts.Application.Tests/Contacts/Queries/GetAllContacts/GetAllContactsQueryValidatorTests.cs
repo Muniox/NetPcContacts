@@ -6,7 +6,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Queries.GetAllContacts
 {
     /// <summary>
     /// Testy jednostkowe dla GetAllContactsQueryValidator.
-    /// Sprawdzaj¹ poprawnoœæ walidacji parametrów paginacji, wyszukiwania i sortowania.
+    /// Sprawdzajï¿½ poprawnoï¿½ï¿½ walidacji parametrï¿½w paginacji, wyszukiwania i sortowania.
     /// </summary>
     public class GetAllContactsQueryValidatorTests
     {
@@ -117,8 +117,8 @@ namespace NetPcContacts.Application.Tests.Contacts.Queries.GetAllContacts
         }
 
         [Theory]
-        [InlineData("FirstName")]
-        [InlineData("LastName")]
+        [InlineData("Name")]
+        [InlineData("Surname")]
         [InlineData("Category")]
         public void Validate_ForValidSortBy_ReturnsSuccess(string sortBy)
         {
@@ -149,9 +149,9 @@ namespace NetPcContacts.Application.Tests.Contacts.Queries.GetAllContacts
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => 
-                e.PropertyName == "SortBy" && 
-                e.ErrorMessage == "Sort by is optional, or must be in [FirstName,LastName,Category]");
+            result.Errors.Should().Contain(e =>
+                e.PropertyName == "SortBy" &&
+                e.ErrorMessage == "Sort by is optional, or must be in [Name,Surname,Category]");
         }
 
         #endregion
@@ -199,7 +199,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Queries.GetAllContacts
         [InlineData("")]
         public void Validate_ForAnySearchPhrase_ReturnsSuccess(string searchPhrase)
         {
-            // Arrange - SearchPhrase nie ma ograniczeñ
+            // Arrange - SearchPhrase nie ma ograniczeï¿½
             var query = CreateValidQuery();
             query.SearchPhrase = searchPhrase;
 
@@ -223,7 +223,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Queries.GetAllContacts
                 SearchPhrase = "test",
                 PageNumber = 2,
                 PageSize = 10,
-                SortBy = "LastName",
+                SortBy = "Surname",
                 SortDirection = SortDirection.Descending
             };
 
@@ -257,7 +257,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Queries.GetAllContacts
         #endregion
 
         /// <summary>
-        /// Tworzy poprawne zapytanie GetAllContactsQuery do testów.
+        /// Tworzy poprawne zapytanie GetAllContactsQuery do testï¿½w.
         /// </summary>
         private static GetAllContactsQuery CreateValidQuery()
         {

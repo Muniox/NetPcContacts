@@ -171,6 +171,13 @@ ng test
   - Null for "Inny" (Other) category
 - CustomSubcategory is used only when Category = "Inny"
 
+#### Update Contact Pattern
+- **Important**: Update endpoints use a separate DTO (`UpdateContactDto`) that excludes the `Id` field
+- The `Id` is passed via route parameter (`/api/contact/{id}`) and manually set in the controller
+- This prevents JSON deserialization from setting `Id = 0`, which would fail validation
+- Password is optional on update - if null/empty, the existing password is retained
+- Pattern: Controller receives DTO → maps to Command → sets Id from route → sends to MediatR
+
 #### Error Handling
 - Custom `ErrorHandlingMiddleware` catches all exceptions
 - Domain exceptions in `NetPcContacts.Domain/Exceptions/`
@@ -207,7 +214,12 @@ ng test
 
 #### HTTP Interceptors
 - **JWT Interceptor**: Automatically attaches bearer token to API requests
-- **Error Interceptor**: Handles HTTP errors globally
+- **Error Interceptor**: Handles HTTP errors globally, attempts token refresh on 401
+
+#### Signal Effects Pattern
+- Effects in services (e.g., `AuthService`) use `effect()` to sync state changes
+- Side effects (localStorage, cookies) should be wrapped in `untracked()` to prevent reactive loops
+- Example: Token changes trigger effects that update storage without causing additional reactive updates
 
 ## Testing Stack
 
@@ -231,3 +243,28 @@ ng test
   - MaxLength constraints matching FluentValidation rules
   - CASCADE delete behavior set to `SetNull` for all relationships
 - **Seeding**: Database is seeded on application startup via `IApplicationSeeder`
+
+## Important Implementation Notes
+
+### Adding New CQRS Commands/Queries
+When adding new commands or queries, follow this pattern:
+1. Create command/query class in `Application/[Feature]/Commands|Queries/[Name]/`
+2. Create validator class `[Name]Validator` in same folder
+3. Create handler class `[Name]Handler` implementing `IRequestHandler<TRequest, TResponse>`
+4. Add DTO if returning data to API (keep DTOs separate from commands/queries)
+5. If updating entities via route parameter, use a separate DTO without the Id field (see `UpdateContactDto` pattern)
+
+### Angular Dialog Components
+- Dialogs can operate in multiple modes (add/edit) using the same component
+- Use `MAT_DIALOG_DATA` to pass mode-specific data (e.g., `contactId` for edit mode)
+- Set up mode detection in `ngOnInit()` using signals (e.g., `isEditMode = signal(false)`)
+- Load existing data in edit mode and adjust form validators accordingly
+- Return boolean from `dialogRef.close(result)` to indicate success/cancellation
+
+### Contact Management Features
+- **Create**: Requires all fields including password
+- **Update**: Password optional, uses `UpdateContactDto` (no Id field)
+- **Delete**: Requires confirmation dialog before deletion
+- **View Details**: Read-only dialog showing full contact information
+- All mutations (create/update/delete) require authentication and show success/error snackbar messages
+- to memorize
