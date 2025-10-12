@@ -1,19 +1,36 @@
+using NetPcContacts.Api.Extensions;
+using NetPcContacts.Api.Middlewares;
+using NetPcContacts.Application.Extensions;
+using NetPcContacts.Domain.Entities;
+using NetPcContacts.Infrastructure.Extensions;
+using NetPcContacts.Infrastructure.Seeders;
+
 namespace NetPcContacts.Api;
 
 public class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
+        // Added Presentation Layer
+        builder.AddPresentation();
 
-        builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
+        // Added Application Layer
+        builder.Services.AddApplication();
+        
+        // Added Infrastructure Layer
+        builder.Services.AddInfrastructure(builder.Configuration);
+        
         var app = builder.Build();
+
+        // Seeders
+        var scope = app.Services.CreateScope();
+        var seeder = scope.ServiceProvider.GetRequiredService<IApplicationSeeder>();
+        await seeder.Seed();
+
+        // Middlewares
+        app.UseMiddleware<ErrorHandlingMiddleware>();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -22,10 +39,22 @@ public class Program
             app.UseSwaggerUI();
         }
 
+        // Mapowanie Identity API z Rate Limiting
+        app.MapGroup("api/identity")
+            .WithTags("Identity")
+            .MapIdentityApi<User>()
+            .RequireRateLimiting("auth");
+
         app.UseHttpsRedirection();
 
-        app.UseAuthorization();
+        app.UseCors("CorsPolicy");
 
+        // WA¯NE: UseRateLimiter PRZED Authentication i Authorization
+        app.UseRateLimiter();
+
+        app.UseAuthentication();
+
+        app.UseAuthorization();
 
         app.MapControllers();
 
