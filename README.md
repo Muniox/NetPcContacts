@@ -496,40 +496,40 @@ ng test --code-coverage
 
 ```
 NetPcContacts/
-   NetPcContacts.Domain/             # Domain entities and interfaces
-      Entities/                     # Contact, Category, Subcategory, User
-      IRepositories/                # Repository interfaces
-      Exceptions/                   # Domain exceptions
-      Constants/                    # Domain constants
-   NetPcContacts.Application/        # Application logic (CQRS)
-      Contacts/
-         Commands/                 # Create, Update, Delete
-         Queries/                  # GetAll, GetById
-         Validators/               # FluentValidation validators
-      DTOs/                         # Data transfer objects
-   NetPcContacts.Infrastructure/     # Data access and persistence
-      Persistence/                  # DbContext
-      Repositories/                 # Repository implementations
-      Migrations/                   # EF Core migrations
-      Seeders/                      # Data seeders
-   NetPcContacts.Api/                # API presentation layer
-      Controllers/                  # API controllers
-      Middlewares/                  # Custom middlewares
-      Extensions/                   # Service registration extensions
-      NetPcContacts.UI/             # Angular frontend
-          src/
-             app/
-                components/       # Angular components
-                services/         # Angular services
-                interceptors/     # HTTP interceptors
-                models/           # TypeScript models
-             environments/         # Environment configs
-             styles.scss           # Global styles
-          package.json              # npm dependencies
-   Tests/
-       NetPcContacts.Api.Tests/      # API integration tests
-       NetPcContacts.Application.Tests/ # Application unit tests
-       NetPcContacts.Infrastructure.Tests/ # Infrastructure unit tests
+├── NetPcContacts.Domain/             # Domain entities and interfaces
+│   ├── Entities/                     # Contact, Category, Subcategory, User
+│   ├── IRepositories/                # Repository interfaces
+│   ├── Exceptions/                   # Domain exceptions
+│   └── Constants/                    # Domain constants
+├── NetPcContacts.Application/        # Application logic (CQRS)
+│   ├── Contacts/
+│   │   ├── Commands/                 # Create, Update, Delete
+│   │   ├── Queries/                  # GetAll, GetById
+│   │   └── Validators/               # FluentValidation validators
+│   └── DTOs/                         # Data transfer objects
+├── NetPcContacts.Infrastructure/     # Data access and persistence
+│   ├── Persistence/                  # DbContext
+│   ├── Repositories/                 # Repository implementations
+│   ├── Migrations/                   # EF Core migrations
+│   └── Seeders/                      # Data seeders
+├── NetPcContacts.Api/                # API presentation layer
+│   ├── Controllers/                  # API controllers
+│   ├── Middlewares/                  # Custom middlewares
+│   ├── Extensions/                   # Service registration extensions
+│   └── NetPcContacts.UI/             # Angular frontend
+│       ├── src/
+│       │   ├── app/
+│       │   │   ├── components/       # Angular components
+│       │   │   ├── services/         # Angular services
+│       │   │   ├── interceptors/     # HTTP interceptors
+│       │   │   └── models/           # TypeScript models
+│       │   ├── environments/         # Environment configs
+│       │   └── styles.scss           # Global styles
+│       └── package.json              # npm dependencies
+└── Tests/
+    ├── NetPcContacts.Api.Tests/      # API integration tests
+    ├── NetPcContacts.Application.Tests/ # Application unit tests
+    └── NetPcContacts.Infrastructure.Tests/ # Infrastructure unit tests
 ```
 
 ## Configuration
