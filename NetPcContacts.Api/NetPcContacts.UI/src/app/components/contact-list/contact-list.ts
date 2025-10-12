@@ -19,6 +19,7 @@ import {AuthService} from '../../services/auth-service';
 import {SortDirection} from '../../models';
 import {ContactDialog} from '../contact-dialog/contact-dialog';
 import {ContactDetailsDialog} from '../contact-details-dialog/contact-details-dialog';
+import {ConfirmDialog} from '../confirm-dialog/confirm-dialog';
 
 @Component({
   selector: 'app-contact-list',
@@ -153,9 +154,14 @@ import {ContactDetailsDialog} from '../contact-details-dialog/contact-details-di
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Akcje</th>
               <td mat-cell *matCellDef="let contact">
-                <button mat-icon-button color="primary" (click)="openContactDetails(contact.id)" [attr.aria-label]="'Zobacz szczegóły kontaktu ' + contact.name">
-                  <mat-icon>visibility</mat-icon>
-                </button>
+                <div class="flex gap-2">
+                  <button mat-icon-button color="primary" (click)="openContactDetails(contact.id)" [attr.aria-label]="'Zobacz szczegóły kontaktu ' + contact.name">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                  <button mat-icon-button color="warn" (click)="deleteContact(contact.id, contact.name, contact.surname)" [attr.aria-label]="'Usuń kontakt ' + contact.name">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
               </td>
             </ng-container>
 
@@ -423,6 +429,42 @@ export class ContactList implements OnInit {
       width: '650px',
       maxWidth: '90vw',
       data: { contactId }
+    });
+  }
+
+  deleteContact(contactId: number, name: string, surname: string): void {
+    const dialogRef = this.dialog.open(ConfirmDialog, {
+      width: '450px',
+      maxWidth: '90vw',
+      data: {
+        title: 'Potwierdzenie usunięcia',
+        message: `Czy na pewno chcesz usunąć kontakt "${name} ${surname}"? Ta operacja jest nieodwracalna.`,
+        confirmText: 'Usuń',
+        cancelText: 'Anuluj'
+      }
+    });
+
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) {
+        this.contactService.deleteContact(contactId).subscribe({
+          next: () => {
+            this.snackBar.open('Kontakt został usunięty pomyślnie!', 'Zamknij', {
+              duration: 3000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top'
+            });
+          },
+          error: (error) => {
+            const errorMessage = error.message || 'Nie udało się usunąć kontaktu. Spróbuj ponownie.';
+            this.snackBar.open(errorMessage, 'Zamknij', {
+              duration: 5000,
+              horizontalPosition: 'end',
+              verticalPosition: 'top',
+              panelClass: ['error-snackbar']
+            });
+          }
+        });
+      }
     });
   }
 }

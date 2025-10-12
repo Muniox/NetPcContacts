@@ -4,12 +4,15 @@ import {inject} from '@angular/core';
 import {AuthService} from '../services/auth-service';
 
 export const errorInterceptor: HttpInterceptorFn = (req, next) => {
+  const authService = inject(AuthService);
+
   return next(req)
     .pipe(
       catchError(error => {
         if (error instanceof HttpErrorResponse && error.status === 401) {
-          if (!req.url.includes('/login')) {
-            return handle401Error(req, next);
+          // Don't try to refresh on login/register/refresh endpoints
+          if (!req.url.includes('/login') && !req.url.includes('/register') && !req.url.includes('/refresh')) {
+            return handle401Error(req, next, authService);
           }
           else {
             return throwError(() => error);
@@ -34,18 +37,19 @@ const addToken = (req: HttpRequest<unknown>) => {
   return req;
 }
 
-const handle401Error = (req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<any> => {
-  const authService = inject(AuthService);
-
+const handle401Error = (req: HttpRequest<unknown>, next: HttpHandlerFn, authService: AuthService): Observable<any> => {
   return authService.refreshToken()
     .pipe(
       switchMap(() => {
         return next(addToken(req))
       }),
       catchError(error => {
-        console.error("Failed to refresh token:" , error);
+        console.error("Failed to refresh token - logging out user" , error);
         authService.logout();
-        return throwError(() => error);
+
+        // Create a more user-friendly error
+        const customError = new Error('Sesja wygasła. Zaloguj się ponownie.');
+        return throwError(() => customError);
       })
     )
 }

@@ -88,6 +88,16 @@ export class ContactService {
       );
   }
 
+  deleteContact(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`)
+      .pipe(
+        tap(() => {
+          // Reload contacts after successful deletion
+          this.loadContacts();
+        })
+      );
+  }
+
   // Helper methods to update query parameters
   setSearchPhrase(searchPhrase: string): void {
     this.searchPhraseSignal.set(searchPhrase);

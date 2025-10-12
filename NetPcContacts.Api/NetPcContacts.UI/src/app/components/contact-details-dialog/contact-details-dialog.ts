@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
+import {Component, Inject, OnInit, signal} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {MatButtonModule} from '@angular/material/button';
 import {MatIconModule} from '@angular/material/icon';
@@ -246,13 +246,15 @@ import {Contact} from '../../models';
   `]
 })
 export class ContactDetailsDialog implements OnInit {
-  private readonly dialogRef = inject(MatDialogRef<ContactDetailsDialog>);
-  private readonly contactService = inject(ContactService);
-  private readonly data = inject<{contactId: number}>(MAT_DIALOG_DATA);
-
   contact = signal<Contact | null>(null);
   loading = signal(true);
   error = signal<string | null>(null);
+
+  constructor(
+    private readonly dialogRef: MatDialogRef<ContactDetailsDialog>,
+    private readonly contactService: ContactService,
+    @Inject(MAT_DIALOG_DATA) private readonly data: {contactId: number}
+  ) {}
 
   ngOnInit(): void {
     this.loadContactDetails();
