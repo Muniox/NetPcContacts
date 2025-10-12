@@ -287,7 +287,6 @@ The project follows Clean Architecture with four main layers:
 #### Build Solution
 ```bash
 # Navigate to solution root
-cd C:\Users\Muniox\RiderProjects\NetPcContacts
 
 # Restore NuGet packages
 dotnet restore
