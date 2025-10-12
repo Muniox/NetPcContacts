@@ -11,6 +11,7 @@ namespace NetPcContacts.Application.Contacts.Commands.UpdateContact
     {
         /// <summary>
         /// ID kontaktu do aktualizacji.
+        /// Ustawiane przez kontroler z route parametru.
         /// </summary>
         public int Id { get; set; }
 

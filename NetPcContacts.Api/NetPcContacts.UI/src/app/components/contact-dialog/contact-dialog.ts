@@ -1,6 +1,6 @@
-import {Component, inject, signal} from '@angular/core';
+import {Component, inject, signal, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
+import {MatDialogModule, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
@@ -11,7 +11,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatIconModule} from '@angular/material/icon';
 
 import {ContactService} from '../../services/contact.service';
-import {CreateContactRequest} from '../../models';
+import {Contact, CreateContactRequest, UpdateContactRequest} from '../../models';
 
 @Component({
   selector: 'app-contact-dialog',
@@ -28,7 +28,7 @@ import {CreateContactRequest} from '../../models';
     MatIconModule
   ],
   template: `
-    <h2 mat-dialog-title>Dodaj Nowy Kontakt</h2>
+    <h2 mat-dialog-title>{{ isEditMode() ? 'Edytuj Kontakt' : 'Dodaj Nowy Kontakt' }}</h2>
 
     <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
       <mat-dialog-content class="dialog-content">
@@ -72,8 +72,8 @@ import {CreateContactRequest} from '../../models';
 
           <!-- Password -->
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Hasło</mat-label>
-            <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" required>
+            <mat-label>Hasło{{ isEditMode() ? ' (zostaw puste aby nie zmieniać)' : '' }}</mat-label>
+            <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" [required]="!isEditMode()">
             <mat-icon matPrefix>lock</mat-icon>
             <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
               <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
@@ -169,7 +169,7 @@ import {CreateContactRequest} from '../../models';
           @if (isLoading()) {
             <mat-spinner diameter="20"></mat-spinner>
           } @else {
-            Dodaj
+            {{ isEditMode() ? 'Zapisz' : 'Dodaj' }}
           }
         </button>
       </mat-dialog-actions>
@@ -229,15 +229,18 @@ import {CreateContactRequest} from '../../models';
     }
   `]
 })
-export class ContactDialog {
+export class ContactDialog implements OnInit {
   private readonly dialogRef = inject(MatDialogRef<ContactDialog>);
   private readonly fb = inject(FormBuilder);
   private readonly contactService = inject(ContactService);
+  readonly data = inject<{ contactId?: number }>(MAT_DIALOG_DATA, { optional: true });
 
   contactForm: FormGroup;
   hidePassword = signal(true);
   isLoading = signal(false);
   errorMessage = signal<string | null>(null);
+  isEditMode = signal(false);
+  contactId: number | null = null;
 
   constructor() {
     this.contactForm = this.fb.group({
@@ -282,6 +285,47 @@ export class ContactDialog {
     });
   }
 
+  ngOnInit(): void {
+    // Check if we're in edit mode
+    if (this.data?.contactId) {
+      this.isEditMode.set(true);
+      this.contactId = this.data.contactId;
+      this.loadContact(this.data.contactId);
+
+      // Make password optional for edit mode
+      const passwordControl = this.contactForm.get('password');
+      passwordControl?.clearValidators();
+      passwordControl?.setValidators([Validators.minLength(8)]);
+      passwordControl?.updateValueAndValidity();
+    }
+  }
+
+  loadContact(contactId: number): void {
+    this.isLoading.set(true);
+    this.contactService.getContactById(contactId).subscribe({
+      next: (contact: Contact) => {
+        // Parse date string to Date object
+        const birthDate = new Date(contact.birthDate);
+
+        this.contactForm.patchValue({
+          name: contact.name,
+          surname: contact.surname,
+          email: contact.email,
+          phoneNumber: contact.phoneNumber,
+          birthDate: birthDate,
+          categoryId: contact.categoryId,
+          subcategoryId: contact.subcategoryId,
+          customSubcategory: contact.customSubcategory
+        });
+        this.isLoading.set(false);
+      },
+      error: (error) => {
+        this.isLoading.set(false);
+        this.errorMessage.set('Nie udało się załadować danych kontaktu.');
+      }
+    });
+  }
+
   togglePasswordVisibility(): void {
     this.hidePassword.set(!this.hidePassword());
   }
@@ -295,30 +339,78 @@ export class ContactDialog {
     this.errorMessage.set(null);
 
     const formValue = this.contactForm.value;
-    const request: CreateContactRequest = {
-      name: formValue.name,
-      surname: formValue.surname,
-      email: formValue.email,
-      password: formValue.password,
-      phoneNumber: formValue.phoneNumber,
-      birthDate: this.formatDate(formValue.birthDate),
-      categoryId: formValue.categoryId,
-      subcategoryId: formValue.categoryId === 1 ? formValue.subcategoryId : null,
-      customSubcategory: formValue.categoryId === 3 ? formValue.customSubcategory : null
-    };
 
-    this.contactService.createContact(request).subscribe({
-      next: () => {
-        this.isLoading.set(false);
-        this.dialogRef.close(true);
-      },
-      error: (error) => {
-        this.isLoading.set(false);
-        this.errorMessage.set(
-          error.error?.message || 'Nie udało się dodać kontaktu. Spróbuj ponownie.'
-        );
-      }
-    });
+    if (this.isEditMode() && this.contactId) {
+      // Update existing contact
+      const request: UpdateContactRequest = {
+        name: formValue.name,
+        surname: formValue.surname,
+        email: formValue.email,
+        password: formValue.password || null, // null if empty
+        phoneNumber: formValue.phoneNumber,
+        birthDate: this.formatDate(formValue.birthDate),
+        categoryId: formValue.categoryId,
+        subcategoryId: formValue.categoryId === 1 ? formValue.subcategoryId : null,
+        customSubcategory: formValue.categoryId === 3 ? formValue.customSubcategory : null
+      };
+
+      this.contactService.updateContact(this.contactId, request).subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.dialogRef.close(true);
+        },
+        error: (error) => {
+          this.isLoading.set(false);
+          console.error('Update contact error:', error);
+          console.error('Request payload:', request);
+
+          let errorMsg = 'Nie udało się zaktualizować kontaktu. Spróbuj ponownie.';
+          if (error.error?.errors) {
+            const validationErrors = Object.values(error.error.errors).flat();
+            errorMsg = validationErrors.join(' ');
+          } else if (error.error?.message) {
+            errorMsg = error.error.message;
+          }
+
+          this.errorMessage.set(errorMsg);
+        }
+      });
+    } else {
+      // Create new contact
+      const request: CreateContactRequest = {
+        name: formValue.name,
+        surname: formValue.surname,
+        email: formValue.email,
+        password: formValue.password,
+        phoneNumber: formValue.phoneNumber,
+        birthDate: this.formatDate(formValue.birthDate),
+        categoryId: formValue.categoryId,
+        subcategoryId: formValue.categoryId === 1 ? formValue.subcategoryId : null,
+        customSubcategory: formValue.categoryId === 3 ? formValue.customSubcategory : null
+      };
+
+      this.contactService.createContact(request).subscribe({
+        next: () => {
+          this.isLoading.set(false);
+          this.dialogRef.close(true);
+        },
+        error: (error) => {
+          this.isLoading.set(false);
+          console.error('Create contact error:', error);
+          console.error('Request payload:', request);
+
+          let errorMsg = 'Nie udało się dodać kontaktu. Spróbuj ponownie.';
+          if (error.error?.errors) {
+            const validationErrors = Object.values(error.error.errors).flat();
+            errorMsg = validationErrors.join(' ');
+          } else if (error.error?.message) {
+            errorMsg = error.error.message;
+          }
+
+          this.errorMessage.set(errorMsg);
+        }
+      });
+    }
   }
 
   onCancel(): void {

@@ -3,7 +3,7 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, tap} from 'rxjs';
 
 import {environment} from '../../environments/environment';
-import {BasicContact, Contact, ContactQuery, CreateContactRequest, PagedResult, SortDirection} from '../models';
+import {BasicContact, Contact, ContactQuery, CreateContactRequest, UpdateContactRequest, PagedResult, SortDirection} from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -83,6 +83,16 @@ export class ContactService {
       .pipe(
         tap(() => {
           // Reload contacts after successful creation
+          this.loadContacts();
+        })
+      );
+  }
+
+  updateContact(id: number, request: UpdateContactRequest): Observable<void> {
+    return this.http.patch<void>(`${this.apiUrl}/${id}`, request)
+      .pipe(
+        tap(() => {
+          // Reload contacts after successful update
           this.loadContacts();
         })
       );

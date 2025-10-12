@@ -133,9 +133,22 @@ namespace NetPcContacts.Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status409Conflict)]
         [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
-        public async Task<IActionResult> UpdateContact([FromRoute] int id, [FromBody] UpdateContactCommand command)
+        public async Task<IActionResult> UpdateContact([FromRoute] int id, [FromBody] UpdateContactDto dto)
         {
-            command.Id = id;
+            var command = new UpdateContactCommand
+            {
+                Id = id,
+                Name = dto.Name,
+                Surname = dto.Surname,
+                Email = dto.Email,
+                Password = dto.Password,
+                PhoneNumber = dto.PhoneNumber,
+                BirthDate = dto.BirthDate,
+                CategoryId = dto.CategoryId,
+                SubcategoryId = dto.SubcategoryId,
+                CustomSubcategory = dto.CustomSubcategory
+            };
+
             await _mediator.Send(command);
             return NoContent();
         }

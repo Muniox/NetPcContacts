@@ -158,6 +158,9 @@ import {ConfirmDialog} from '../confirm-dialog/confirm-dialog';
                   <button mat-icon-button color="primary" (click)="openContactDetails(contact.id)" [attr.aria-label]="'Zobacz szczegóły kontaktu ' + contact.name">
                     <mat-icon>visibility</mat-icon>
                   </button>
+                  <button mat-icon-button color="accent" (click)="editContact(contact.id)" [attr.aria-label]="'Edytuj kontakt ' + contact.name">
+                    <mat-icon>edit</mat-icon>
+                  </button>
                   <button mat-icon-button color="warn" (click)="deleteContact(contact.id, contact.name, contact.surname)" [attr.aria-label]="'Usuń kontakt ' + contact.name">
                     <mat-icon>delete</mat-icon>
                   </button>
@@ -429,6 +432,26 @@ export class ContactList implements OnInit {
       width: '650px',
       maxWidth: '90vw',
       data: { contactId }
+    });
+  }
+
+  editContact(contactId: number): void {
+    const dialogRef = this.dialog.open(ContactDialog, {
+      width: '600px',
+      maxWidth: '90vw',
+      disableClose: false,
+      autoFocus: true,
+      data: { contactId }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result === true) {
+        this.snackBar.open('Kontakt został zaktualizowany pomyślnie!', 'Zamknij', {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top'
+        });
+      }
     });
   }
 
