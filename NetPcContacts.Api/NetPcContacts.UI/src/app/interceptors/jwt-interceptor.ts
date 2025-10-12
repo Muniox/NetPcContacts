@@ -5,12 +5,12 @@ import {AuthService} from '../services/auth-service';
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
-  const isLoggedIn = authService.isLoggedIn();
+  const accessToken = authService.accessToken();
 
-  if (isLoggedIn) {
+  if (accessToken) {
     req = req.clone({
       setHeaders: {
-        Authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        Authorization: `Bearer ${accessToken}`
       }
     })
   }

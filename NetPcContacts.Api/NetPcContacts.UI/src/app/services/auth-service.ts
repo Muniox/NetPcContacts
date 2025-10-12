@@ -1,4 +1,4 @@
-import {computed, effect, inject, Injectable, signal} from '@angular/core';
+import {computed, effect, inject, Injectable, signal, untracked} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {map, Observable, tap} from 'rxjs';
 
@@ -25,21 +25,25 @@ export class AuthService {
     // Sync accessToken changes to localStorage
     effect(() => {
       const token = this.accessTokenSignal();
-      if (token) {
-        localStorage.setItem('accessToken', token);
-      } else {
-        localStorage.removeItem('accessToken');
-      }
+      untracked(() => {
+        if (token) {
+          localStorage.setItem('accessToken', token);
+        } else {
+          localStorage.removeItem('accessToken');
+        }
+      });
     });
 
-    // Sync refreshToken changes to cookie
+    // Sync refreshToken changes to cookie (7 days expiration)
     effect(() => {
       const token = this.refreshTokenSignal();
-      if (token) {
-        document.cookie = `refreshToken=${token}`;
-      } else {
-        document.cookie = 'refreshToken=;';
-      }
+      untracked(() => {
+        if (token) {
+          this.setCookie('refreshToken', token, 7);
+        } else {
+          this.deleteCookie('refreshToken');
+        }
+      });
     });
   }
 
@@ -95,5 +99,18 @@ export class AuthService {
     }
 
     return null;
+  }
+
+  private setCookie(name: string, value: string, days: number): void {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    const expires = `expires=${date.toUTCString()}`;
+    const secure = window.location.protocol === 'https:' ? 'Secure;' : '';
+    document.cookie = `${name}=${value};${expires};path=/;${secure}SameSite=Strict`;
+  }
+
+  private deleteCookie(name: string): void {
+    const secure = window.location.protocol === 'https:' ? 'Secure;' : '';
+    document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;${secure}SameSite=Strict`;
   }
 }

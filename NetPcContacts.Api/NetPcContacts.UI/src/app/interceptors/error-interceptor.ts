@@ -25,8 +25,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
     )
 };
 
-const addToken = (req: HttpRequest<unknown>) => {
-  const accessToken = localStorage.getItem('accessToken');
+const addToken = (req: HttpRequest<unknown>, authService: AuthService) => {
+  const accessToken = authService.accessToken();
   if (accessToken) {
     return req.clone({
       setHeaders: {
@@ -41,7 +41,7 @@ const handle401Error = (req: HttpRequest<unknown>, next: HttpHandlerFn, authServ
   return authService.refreshToken()
     .pipe(
       switchMap(() => {
-        return next(addToken(req))
+        return next(addToken(req, authService))
       }),
       catchError(error => {
         console.error("Failed to refresh token - logging out user" , error);
