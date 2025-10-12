@@ -9,6 +9,7 @@ import {MatNativeDateModule} from '@angular/material/core';
 import {MatSelectModule} from '@angular/material/select';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatIconModule} from '@angular/material/icon';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 import {ContactService} from '../../services/contact.service';
 import {Contact, CreateContactRequest, UpdateContactRequest} from '../../models';
@@ -25,7 +26,8 @@ import {Contact, CreateContactRequest, UpdateContactRequest} from '../../models'
     MatNativeDateModule,
     MatSelectModule,
     MatProgressSpinnerModule,
-    MatIconModule
+    MatIconModule,
+    MatTooltipModule
   ],
   template: `
     <h2 mat-dialog-title>{{ isEditMode() ? 'Edytuj Kontakt' : 'Dodaj Nowy Kontakt' }}</h2>
@@ -75,7 +77,7 @@ import {Contact, CreateContactRequest, UpdateContactRequest} from '../../models'
             <mat-label>Hasło{{ isEditMode() ? ' (zostaw puste aby nie zmieniać)' : '' }}</mat-label>
             <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" [required]="!isEditMode()">
             <mat-icon matPrefix>lock</mat-icon>
-            <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+            <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()" [matTooltip]="hidePassword() ? 'Pokaż hasło' : 'Ukryj hasło'">
               <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
             @if (contactForm.get('password')?.hasError('required') && contactForm.get('password')?.touched) {
@@ -162,10 +164,10 @@ import {Contact, CreateContactRequest, UpdateContactRequest} from '../../models'
       </mat-dialog-content>
 
       <mat-dialog-actions align="end">
-        <button mat-button type="button" (click)="onCancel()" [disabled]="isLoading()">
+        <button mat-stroked-button type="button" (click)="onCancel()" [disabled]="isLoading()">
           Anuluj
         </button>
-        <button mat-raised-button color="primary" type="submit" [disabled]="contactForm.invalid || isLoading()">
+        <button mat-stroked-button color="primary" type="submit" [disabled]="contactForm.invalid || isLoading()">
           @if (isLoading()) {
             <mat-spinner diameter="20"></mat-spinner>
           } @else {

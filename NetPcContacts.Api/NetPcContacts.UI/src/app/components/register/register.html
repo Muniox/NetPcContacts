@@ -65,7 +65,8 @@
                 type="button"
                 (click)="togglePasswordVisibility()"
                 [attr.aria-label]="'Pokaż/Ukryj hasło'"
-                [attr.aria-pressed]="hidePassword()">
+                [attr.aria-pressed]="hidePassword()"
+                [matTooltip]="hidePassword() ? 'Pokaż hasło' : 'Ukryj hasło'">
                 <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
               @if (registerForm.get('password')?.invalid && registerForm.get('password')?.touched) {
@@ -98,7 +99,8 @@
                 type="button"
                 (click)="toggleConfirmPasswordVisibility()"
                 [attr.aria-label]="'Pokaż/Ukryj potwierdzenie hasła'"
-                [attr.aria-pressed]="hideConfirmPassword()">
+                [attr.aria-pressed]="hideConfirmPassword()"
+                [matTooltip]="hideConfirmPassword() ? 'Pokaż hasło' : 'Ukryj hasło'">
                 <mat-icon>{{ hideConfirmPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
               </button>
               @if (registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched) {
