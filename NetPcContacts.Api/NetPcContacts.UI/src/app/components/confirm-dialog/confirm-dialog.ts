@@ -27,10 +27,10 @@ export interface ConfirmDialogData {
         <p>{{ data.message }}</p>
       </mat-dialog-content>
       <mat-dialog-actions class="dialog-actions">
-        <button mat-button (click)="onCancel()">
+        <button mat-stroked-button (click)="onCancel()">
           {{ data.cancelText || 'Anuluj' }}
         </button>
-        <button mat-raised-button color="warn" (click)="onConfirm()">
+        <button mat-stroked-button color="warn" (click)="onConfirm()">
           {{ data.confirmText || 'Potwierdź' }}
         </button>
       </mat-dialog-actions>

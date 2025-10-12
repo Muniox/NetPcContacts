@@ -123,7 +123,7 @@ import {Contact} from '../../models';
     </mat-dialog-content>
 
     <mat-dialog-actions align="end">
-      <button mat-button (click)="onClose()">Zamknij</button>
+      <button mat-stroked-button (click)="onClose()">Zamknij</button>
     </mat-dialog-actions>
   `,
   styles: [`

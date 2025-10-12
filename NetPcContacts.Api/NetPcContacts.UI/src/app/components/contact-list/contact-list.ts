@@ -12,6 +12,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatSnackBar, MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDialog, MatDialogModule} from '@angular/material/dialog';
+import {MatTooltipModule} from '@angular/material/tooltip';
 import {debounceTime, distinctUntilChanged} from 'rxjs';
 
 import {ContactService} from '../../services/contact.service';
@@ -36,7 +37,8 @@ import {ConfirmDialog} from '../confirm-dialog/confirm-dialog';
     MatCardModule,
     MatChipsModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTooltipModule
   ],
   template: `
     <div class="container mx-auto px-4 py-8 max-w-7xl">
@@ -49,7 +51,7 @@ import {ConfirmDialog} from '../confirm-dialog/confirm-dialog';
           <div class="action-content">
             <!-- Add button (visible only for logged in users) -->
             @if (authService.isLoggedIn()) {
-              <button mat-raised-button color="primary" class="add-button" (click)="openAddContactDialog()">
+              <button mat-stroked-button color="primary" class="add-button" (click)="openAddContactDialog()">
                 <mat-icon>add</mat-icon>
                 Dodaj Kontakt
               </button>
@@ -66,15 +68,15 @@ import {ConfirmDialog} from '../confirm-dialog/confirm-dialog';
                 />
                 <mat-icon matPrefix>search</mat-icon>
                 @if (searchControl.value) {
-                  <button mat-icon-button matSuffix (click)="onClearSearch()" type="button" aria-label="Wyczyść wyszukiwanie">
+                  <button mat-icon-button matSuffix (click)="onClearSearch()" type="button" aria-label="Wyczyść wyszukiwanie" matTooltip="Wyczyść wyszukiwanie">
                     <mat-icon>close</mat-icon>
                   </button>
                 }
               </mat-form-field>
-              <button mat-raised-button color="accent" class="search-button" (click)="onSearch()">
+              <button mat-stroked-button color="accent" class="search-button" (click)="onSearch()">
                 Szukaj
               </button>
-              <button mat-raised-button class="clear-button" (click)="onClearSearch()">
+              <button mat-stroked-button class="clear-button" (click)="onClearSearch()">
                 Wyczyść
               </button>
             </div>
@@ -102,10 +104,10 @@ import {ConfirmDialog} from '../confirm-dialog/confirm-dialog';
             (matSortChange)="onSortChange($event)"
             class="w-full"
           >
-            <!-- ID Column -->
-            <ng-container matColumnDef="id">
-              <th mat-header-cell *matHeaderCellDef>ID</th>
-              <td mat-cell *matCellDef="let contact">{{ contact.id }}</td>
+            <!-- LP Column -->
+            <ng-container matColumnDef="lp">
+              <th mat-header-cell *matHeaderCellDef>Lp.</th>
+              <td mat-cell *matCellDef="let contact; let i = index">{{ (contactService.pageNumber() - 1) * contactService.pageSize() + i + 1 }}</td>
             </ng-container>
 
             <!-- Name Column -->
@@ -155,13 +157,13 @@ import {ConfirmDialog} from '../confirm-dialog/confirm-dialog';
               <th mat-header-cell *matHeaderCellDef>Akcje</th>
               <td mat-cell *matCellDef="let contact">
                 <div class="flex gap-2">
-                  <button mat-icon-button color="primary" (click)="openContactDetails(contact.id)" [attr.aria-label]="'Zobacz szczegóły kontaktu ' + contact.name">
+                  <button mat-icon-button color="primary" (click)="openContactDetails(contact.id)" [attr.aria-label]="'Zobacz szczegóły kontaktu ' + contact.name" matTooltip="Zobacz szczegóły">
                     <mat-icon>visibility</mat-icon>
                   </button>
-                  <button mat-icon-button color="accent" (click)="editContact(contact.id)" [attr.aria-label]="'Edytuj kontakt ' + contact.name">
+                  <button mat-icon-button color="accent" (click)="editContact(contact.id)" [attr.aria-label]="'Edytuj kontakt ' + contact.name" matTooltip="Edytuj">
                     <mat-icon>edit</mat-icon>
                   </button>
-                  <button mat-icon-button color="warn" (click)="deleteContact(contact.id, contact.name, contact.surname)" [attr.aria-label]="'Usuń kontakt ' + contact.name">
+                  <button mat-icon-button color="warn" (click)="deleteContact(contact.id, contact.name, contact.surname)" [attr.aria-label]="'Usuń kontakt ' + contact.name" matTooltip="Usuń">
                     <mat-icon>delete</mat-icon>
                   </button>
                 </div>
@@ -329,7 +331,7 @@ export class ContactList implements OnInit {
 
   // Table columns - computed based on auth state
   displayedColumns = computed(() => {
-    const baseColumns = ['id', 'name', 'surname', 'email', 'phoneNumber', 'category'];
+    const baseColumns = ['lp', 'name', 'surname', 'email', 'phoneNumber', 'category'];
     return this.authService.isLoggedIn()
       ? [...baseColumns, 'actions']
       : baseColumns;
