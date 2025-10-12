@@ -227,9 +227,8 @@ The project follows Clean Architecture with four main layers:
 - Bearer token authentication
 
 **CQRS & Validation**:
-- MediatR 12.4.1 - CQRS implementation
-- FluentValidation 11.9.2 - Input validation
-- FluentValidation.DependencyInjectionExtensions 11.9.2
+- MediatR 12.5.0 - CQRS implementation
+- FluentValidation.AspNetCore 11.3.1 - Input validation with ASP.NET Core integration
 
 **API Documentation**:
 - Swashbuckle.AspNetCore 6.6.2 - Swagger/OpenAPI
@@ -238,37 +237,43 @@ The project follows Clean Architecture with four main layers:
 - ASP.NET Core built-in rate limiting (System.Threading.RateLimiting)
 
 **Testing**:
-- xUnit 2.8.1 - Test framework
+- xUnit 2.5.3 - Test framework
+- xunit.runner.visualstudio 2.5.3 - Visual Studio test runner
 - Moq 4.20.72 - Mocking library
-- FluentAssertions 6.12.1 - Assertion library
-- Microsoft.AspNetCore.Mvc.Testing 8.0.8 - Integration tests
-- coverlet.collector 6.0.2 - Code coverage
+- FluentAssertions 8.7.1 - Assertion library
+- Microsoft.AspNetCore.Mvc.Testing 8.0.0 - Integration tests
+- Microsoft.EntityFrameworkCore.InMemory 9.0.9 - In-memory database for testing
+- Microsoft.NET.Test.Sdk 17.8.0 - Test SDK
+- coverlet.collector 6.0.4 - Code coverage
 
 ### Frontend (Angular)
 
 **Core Framework**:
-- Angular 20.2.8
-- TypeScript 5.7.3
-- RxJS 7.8.1 - Reactive programming
+- Angular 20.3.0 (core, common, compiler, forms, platform-browser, router)
+- Angular CDK 20.2.8 - Component Dev Kit
+- TypeScript 5.9.2
+- RxJS 7.8.0 - Reactive programming
+- tslib 2.3.0 - TypeScript runtime library
 
 **UI Framework**:
 - Angular Material 20.2.8 - Component library
 - Tailwind CSS 3.4.18 - Utility-first CSS
 
 **Build Tools**:
-- Angular CLI 20.2.7
+- Angular CLI 20.3.5
+- Angular Build 20.3.5
 - Webpack (via Angular CLI)
-- PostCSS 8.4.39 - CSS processing
-- Autoprefixer 10.4.20 - CSS vendor prefixing
+- PostCSS 8.5.6 - CSS processing
+- Autoprefixer 10.4.21 - CSS vendor prefixing
 
 **Testing**:
-- Jasmine 5.9.0 - Test framework
+- Jasmine Core 5.9.0 - Test framework
+- @types/jasmine 5.1.0 - TypeScript definitions for Jasmine
 - Karma 6.4.0 - Test runner
-- karma-coverage 2.2.1 - Code coverage
-
-**Development**:
-- TypeScript ESLint 8.19.1
-- Angular ESLint 18.4.3
+- karma-chrome-launcher 3.2.0 - Chrome launcher for Karma
+- karma-coverage 2.2.0 - Code coverage
+- karma-jasmine 5.1.0 - Jasmine adapter for Karma
+- karma-jasmine-html-reporter 2.1.0 - HTML reporter for Karma
 
 ## Compilation and Deployment
 
