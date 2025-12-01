@@ -8,7 +8,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
 {
     /// <summary>
     /// Testy jednostkowe dla CategoryRepository.
-    /// U¿ywaj¹ InMemory Database do testowania operacji na kategoriach.
+    /// UÅ¼ywajÄ… InMemory Database do testowania operacji na kategoriach.
     /// </summary>
     public class CategoryRepositoryTests : IDisposable
     {
@@ -36,7 +36,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task Exists_ForExistingCategory_ReturnsTrue()
         {
             // Arrange
-            var category = new Category { CategoryName = "S³u¿bowy" };
+            var category = new Category { CategoryName = "SÅ‚uÅ¼bowy" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
@@ -67,7 +67,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
             // Arrange
             var categories = new[]
             {
-                new Category { CategoryName = "S³u¿bowy" },
+                new Category { CategoryName = "SÅ‚uÅ¼bowy" },
                 new Category { CategoryName = "Prywatny" },
                 new Category { CategoryName = "Inny" }
             };
@@ -79,7 +79,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
 
             // Assert
             result.Should().HaveCount(3);
-            result.Should().Contain(c => c.CategoryName == "S³u¿bowy");
+            result.Should().Contain(c => c.CategoryName == "SÅ‚uÅ¼bowy");
             result.Should().Contain(c => c.CategoryName == "Prywatny");
             result.Should().Contain(c => c.CategoryName == "Inny");
         }
@@ -102,7 +102,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task GetByIdWithSubcategories_ForExistingCategory_ReturnsCategoryWithSubcategories()
         {
             // Arrange
-            var category = new Category { CategoryName = "S³u¿bowy" };
+            var category = new Category { CategoryName = "SÅ‚uÅ¼bowy" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
@@ -120,7 +120,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
 
             // Assert
             result.Should().NotBeNull();
-            result!.CategoryName.Should().Be("S³u¿bowy");
+            result!.CategoryName.Should().Be("SÅ‚uÅ¼bowy");
             result.Subcategories.Should().HaveCount(3);
             result.Subcategories.Should().Contain(s => s.SubcategoryName == "Szef");
             result.Subcategories.Should().Contain(s => s.SubcategoryName == "Klient");

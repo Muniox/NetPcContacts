@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using NetPcContacts.Api.Middlewares;
+using NetPcContacts.Api.ExceptionHandlers;
 using System.Reflection;
 using System.Threading.RateLimiting;
 
@@ -168,8 +168,15 @@ namespace NetPcContacts.Api.Extensions
                 };
             });
 
-            // Middlewares
-            builder.Services.AddScoped<ErrorHandlingMiddleware>();
+            // Exception Handling
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails(options =>
+            {
+                options.CustomizeProblemDetails = context =>
+                {
+                    context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+                };
+            });
         }
     }
 }
