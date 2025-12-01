@@ -287,29 +287,30 @@ The project follows Clean Architecture with four main layers:
 #### Build Solution
 ```bash
 # Navigate to solution root
-cd C:\Users\Muniox\RiderProjects\NetPcContacts
 
 # Restore NuGet packages
 dotnet restore
 
-# Build entire solution
+# Build entire solution (Development)
 dotnet build
 
-# Build in Release mode
-dotnet build --configuration Release
+# Build in Debug mode (default)
+dotnet build --configuration Debug
 ```
 
 #### Run Application
 ```bash
-# Run API project (Development)
+# Run API project (Development mode)
 dotnet run --project NetPcContacts.Api
 
-# Run with watch mode (auto-reload)
+# Run with watch mode (auto-reload on file changes)
 dotnet watch --project NetPcContacts.Api
 
-# Run in Production mode
-dotnet run --project NetPcContacts.Api --configuration Release
+# Explicitly specify Development environment
+dotnet run --project NetPcContacts.Api --launch-profile "https"
 ```
+
+**Note**: Always run in Development mode as production environment variables are not configured.
 
 The API will be available at:
 - HTTPS: `https://localhost:7076`
@@ -342,12 +343,16 @@ dotnet test --collect:"XPlat Code Coverage"
 ```
 
 #### Publish Application
-```bash
-# Publish for deployment
-dotnet publish NetPcContacts.Api --configuration Release --output ./publish
 
-# Publish as self-contained (includes runtime)
-dotnet publish NetPcContacts.Api --configuration Release --self-contained true --runtime win-x64 --output ./publish
+**Note**: Production deployment requires additional configuration (environment variables, connection strings, etc.) which are not included in this repository.
+
+For development deployment:
+```bash
+# Publish for development deployment
+dotnet publish NetPcContacts.Api --configuration Debug --output ./publish
+
+# Or publish as self-contained (includes runtime)
+dotnet publish NetPcContacts.Api --configuration Debug --self-contained true --runtime win-x64 --output ./publish
 ```
 
 ### Frontend Compilation
@@ -377,16 +382,18 @@ npm run watch
 
 #### Build
 ```bash
-# Build for production
+# Build for development
 npm run build
 # or
 ng build
 
-# Build with optimization
-ng build --configuration production
+# Build with development configuration (default)
+ng build --configuration development
 
 # Output directory: dist/net-pc-contacts.ui/browser/
 ```
+
+**Note**: Production build configuration requires additional environment settings not included in this repository.
 
 #### Test
 ```bash
@@ -404,9 +411,13 @@ ng test --code-coverage
 
 ### Full Application Deployment
 
+**⚠️ Important**: Production deployment is not configured. The application is designed to run in Development mode only.
+
+For development environment deployment:
+
 1. **Build Backend**:
    ```bash
-   dotnet publish NetPcContacts.Api --configuration Release --output ./publish
+   dotnet publish NetPcContacts.Api --configuration Debug --output ./publish
    ```
 
 2. **Build Frontend**:
@@ -415,14 +426,22 @@ ng test --code-coverage
    npm run build
    ```
 
-3. **Deploy**:
+3. **Deploy to Development Server**:
    - Copy published backend files to server
    - Copy `dist/net-pc-contacts.ui/browser/` to server's wwwroot or static file directory
    - Configure web server (IIS, Nginx, Apache) to serve:
      - API endpoints: `https://yourdomain.com/api/`
      - Static files: `https://yourdomain.com/`
    - Set up SSL certificate
-   - Configure connection string in `appsettings.Production.json`
+   - Ensure `appsettings.Development.json` is present with proper configuration
+   - Set environment variable: `ASPNETCORE_ENVIRONMENT=Development`
+
+**For Production Deployment** (requires additional setup):
+- Create `appsettings.Production.json` with production settings
+- Configure production database connection string
+- Set up production authentication keys
+- Configure production CORS origins
+- Set environment variable: `ASPNETCORE_ENVIRONMENT=Production`
 
 ## Validation Rules
 
