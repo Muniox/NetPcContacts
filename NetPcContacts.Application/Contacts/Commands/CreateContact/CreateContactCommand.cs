@@ -1,9 +1,9 @@
-﻿using MediatR;
+﻿using Mediator;
 
 namespace NetPcContacts.Application.Contacts.Commands.CreateContact
 {
 
-    public class CreateContactCommand : IRequest<int>
+    public class CreateContactCommand : ICommand<int>
     {
         /// <summary>
         /// Imię kontaktu - wymagane pole tekstowe.

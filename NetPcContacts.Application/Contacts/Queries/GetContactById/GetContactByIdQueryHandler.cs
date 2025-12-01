@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Mediator;
 using Microsoft.Extensions.Logging;
 using NetPcContacts.Application.Contacts.Dtos;
 using NetPcContacts.Domain.Exceptions;
@@ -10,7 +10,7 @@ namespace NetPcContacts.Application.Contacts.Queries.GetContactById
     /// Handler obsługujący zapytanie GetContactByIdQuery.
     /// Pobiera kontakt z bazy i mapuje go na ContactDto.
     /// </summary>
-    public class GetContactByIdQueryHandler : IRequestHandler<GetContactByIdQuery, ContactDto?>
+    public class GetContactByIdQueryHandler : IQueryHandler<GetContactByIdQuery, ContactDto?>
     {
         private readonly IContactsRepository _contactsRepository;
         private readonly ILogger<GetContactByIdQueryHandler> _logger;
@@ -25,23 +25,23 @@ namespace NetPcContacts.Application.Contacts.Queries.GetContactById
         /// <summary>
         /// Obsługuje zapytanie pobierające kontakt po ID.
         /// </summary>
-        /// <param name="request">Query zawierające ID kontaktu</param>
+        /// <param name="query">Query zawierające ID kontaktu</param>
         /// <param name="cancellationToken">Token anulowania operacji</param>
         /// <returns>ContactDto z danymi kontaktu lub null jeśli nie znaleziono</returns>
-        public async Task<ContactDto?> Handle(GetContactByIdQuery request, CancellationToken cancellationToken)
+        public async ValueTask<ContactDto?> Handle(GetContactByIdQuery query, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Retrieving contact: {CotactId}", request.ContactId);
+            _logger.LogInformation("Retrieving contact: {CotactId}", query.ContactId);
 
             // Pobierz kontakt z bazy wraz z relacjami (Category, Subcategory)
-            var contact = await _contactsRepository.GetById(request.ContactId);
+            var contact = await _contactsRepository.GetById(query.ContactId);
 
             // Jeśli kontakt nie istnieje, zwróć null
             if (contact == null)
             {
-                throw new NotFoundException(nameof(contact), request.ContactId.ToString());
+                throw new NotFoundException(nameof(contact), query.ContactId.ToString());
             }
 
-            _logger.LogInformation("Contact retrieved successfully: {ContactId}", request.ContactId);
+            _logger.LogInformation("Contact retrieved successfully: {ContactId}", query.ContactId);
 
             // Mapuj encję Contact na ContactDto
             // WAŻNE: NIE zwracamy PasswordHash - bezpieczeństwo!

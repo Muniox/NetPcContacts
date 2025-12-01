@@ -1,13 +1,13 @@
-﻿using MediatR;
+﻿using Mediator;
 
 namespace NetPcContacts.Application.Contacts.Commands.UpdateContact
 {
     /// <summary>
     /// Komenda do aktualizacji istniejącego kontaktu.
-    /// Implementuje wzorzec CQRS poprzez MediatR.
+    /// Implementuje wzorzec CQRS poprzez Mediator.
     /// Nie zwraca żadnej wartości (Unit).
     /// </summary>
-    public class UpdateContactCommand : IRequest
+    public class UpdateContactCommand : ICommand
     {
         /// <summary>
         /// ID kontaktu do aktualizacji.

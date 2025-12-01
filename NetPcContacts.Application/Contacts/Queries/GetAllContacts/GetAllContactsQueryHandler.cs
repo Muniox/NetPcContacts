@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Mediator;
 using Microsoft.Extensions.Logging;
 using NetPcContacts.Application.Common;
 using NetPcContacts.Application.Contacts.Dtos;
@@ -10,7 +10,7 @@ namespace NetPcContacts.Application.Contacts.Queries.GetAllContacts
     /// Handler obsługujący zapytanie GetAllContactsQuery.
     /// Pobiera stronicowaną listę kontaktów z możliwością wyszukiwania i sortowania.
     /// </summary>
-    public class GetAllContactsQueryHandler : IRequestHandler<GetAllContactsQuery, PagedResult<BasicContactDto>>
+    public class GetAllContactsQueryHandler : IQueryHandler<GetAllContactsQuery, PagedResult<BasicContactDto>>
     {
         private readonly IContactsRepository _contactsRepository;
         private readonly ILogger<GetAllContactsQueryHandler> _logger;
@@ -31,26 +31,26 @@ namespace NetPcContacts.Application.Contacts.Queries.GetAllContacts
         /// <summary>
         /// Obsługuje zapytanie pobierające stronicowaną listę kontaktów.
         /// </summary>
-        /// <param name="request">Query zawierające parametry wyszukiwania, paginacji i sortowania</param>
+        /// <param name="query">Query zawierające parametry wyszukiwania, paginacji i sortowania</param>
         /// <param name="cancellationToken">Token anulowania operacji</param>
         /// <returns>PagedResult z listą BasicContactDto oraz metadanymi paginacji</returns>
-        public async Task<PagedResult<BasicContactDto>> Handle(GetAllContactsQuery request, CancellationToken cancellationToken)
+        public async ValueTask<PagedResult<BasicContactDto>> Handle(GetAllContactsQuery query, CancellationToken cancellationToken)
         {
             _logger.LogInformation(
                 "Retrieving contacts with pagination - Page: {PageNumber}, PageSize: {PageSize}, SearchPhrase: {SearchPhrase}, SortBy: {SortBy}, SortDirection: {SortDirection}",
-                request.PageNumber,
-                request.PageSize,
-                request.SearchPhrase ?? "null",
-                request.SortBy ?? "null",
-                request.SortDirection);
+                query.PageNumber,
+                query.PageSize,
+                query.SearchPhrase ?? "null",
+                query.SortBy ?? "null",
+                query.SortDirection);
 
             // Pobierz kontakty z bazy z uwzględnieniem filtrowania, sortowania i paginacji
             var (contacts, totalCount) = await _contactsRepository.GetAllMatchingAsync(
-                request.SearchPhrase,
-                request.PageSize,
-                request.PageNumber,
-                request.SortBy,
-                request.SortDirection);
+                query.SearchPhrase,
+                query.PageSize,
+                query.PageNumber,
+                query.SortBy,
+                query.SortDirection);
 
             // Mapuj encje Contact na BasicContactDto
             var contactsDtos = contacts.Select(c => new BasicContactDto
@@ -72,8 +72,8 @@ namespace NetPcContacts.Application.Contacts.Queries.GetAllContacts
             return new PagedResult<BasicContactDto>(
                 contactsDtos,
                 totalCount,
-                request.PageSize,
-                request.PageNumber);
+                query.PageSize,
+                query.PageNumber);
         }
     }
 }

@@ -19,7 +19,7 @@ The project follows Clean Architecture with four main layers:
 - No external dependencies (except Identity for User entity)
 
 ### Application Layer (`NetPcContacts.Application`)
-- CQRS implementation using MediatR
+- CQRS implementation using Mediator (source generator-based)
 - Commands: `CreateContact`, `UpdateContact`, `DeleteContact`
 - Queries: `GetAllContacts`, `GetContactById`
 - FluentValidation validators for all commands and queries
@@ -46,7 +46,7 @@ The project follows Clean Architecture with four main layers:
 ## Dependency Injection Setup
 
 Each layer registers its services via extension methods:
-- **Application**: `ServiceCollectionExtensions.AddApplication()` - registers MediatR, FluentValidation
+- **Application**: `ServiceCollectionExtensions.AddApplication()` - registers Mediator, FluentValidation
 - **Infrastructure**: `ServiceCollectionExtensions.AddInfrastructure(configuration)` - registers DbContext, Identity, repositories, seeders
 - **API**: `WebApplicationBuilderExtensions.AddPresentation()` - registers controllers, Swagger, authentication, rate limiting, CORS
 
