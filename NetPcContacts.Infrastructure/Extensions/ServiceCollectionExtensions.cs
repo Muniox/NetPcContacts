@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authentication.BearerToken;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,12 +21,9 @@ public static class ServiceCollectionExtensions
             // .EnableSensitiveDataLogging();
         });
 
+        // Identity Core - tylko persistence (bez API endpoints)
         services.AddIdentityCore<User>()
-            .AddEntityFrameworkStores<NetPcContactsDbContext>()
-            .AddApiEndpoints();
-
-        // domyślnie token wygasa po 1h, zmieniamy na 1 min
-        services.ConfigureAll<BearerTokenOptions>(option => option.BearerTokenExpiration = TimeSpan.FromMinutes(1));
+            .AddEntityFrameworkStores<NetPcContactsDbContext>();
 
         // Rejestracja repozytorium
         services.AddScoped<IContactsRepository, ContactsRepository>();
