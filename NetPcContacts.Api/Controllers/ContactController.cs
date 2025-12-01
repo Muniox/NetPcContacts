@@ -91,7 +91,7 @@ namespace NetPcContacts.Api.Controllers
         /// Aktualizuje istniejący kontakt.
         /// </summary>
         /// <param name="id">ID kontaktu do aktualizacji</param>
-        /// <param name="command">Zaktualizowane dane kontaktu</param>
+        /// <param name="dto">Zaktualizowane dane kontaktu</param>
         /// <returns>NoContent (204)</returns>
         /// <remarks>
         /// Przykładowe żądanie:
