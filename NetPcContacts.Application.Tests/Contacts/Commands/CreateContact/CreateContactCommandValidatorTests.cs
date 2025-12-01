@@ -5,7 +5,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 {
     /// <summary>
     /// Testy jednostkowe dla CreateContactCommandValidator.
-    /// Sprawdzaj¹ poprawnoœæ walidacji danych wejœciowych zgodnie z regu³ami biznesowymi.
+    /// SprawdzajÄ… poprawnoÅ›Ä‡ walidacji danych wejÅ›ciowych zgodnie z reguÅ‚ami biznesowymi.
     /// </summary>
     public class CreateContactCommandValidatorTests
     {
@@ -44,7 +44,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Name" && e.ErrorMessage == "Imiê jest wymagane.");
+            result.Errors.Should().Contain(e => e.PropertyName == "Name" && e.ErrorMessage == "ImiÄ™ jest wymagane.");
         }
 
         [Fact]
@@ -52,14 +52,14 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
         {
             // Arrange
             var command = CreateValidCommand();
-            command.Name = new string('a', 101); // 101 znaków
+            command.Name = new string('a', 101); // 101 znakÃ³w
 
             // Act
             var result = _validator.Validate(command);
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Name" && e.ErrorMessage == "Imiê musi zawieraæ od 1 do 100 znaków.");
+            result.Errors.Should().Contain(e => e.PropertyName == "Name" && e.ErrorMessage == "ImiÄ™ musi zawieraÄ‡ od 1 do 100 znakÃ³w.");
         }
 
         #endregion
@@ -107,7 +107,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Surname" && e.ErrorMessage == "Nazwisko musi zawieraæ od 1 do 100 znaków.");
+            result.Errors.Should().Contain(e => e.PropertyName == "Surname" && e.ErrorMessage == "Nazwisko musi zawieraÄ‡ od 1 do 100 znakÃ³w.");
         }
 
         #endregion
@@ -155,7 +155,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Email" && e.ErrorMessage == "Nieprawid³owy format adresu email.");
+            result.Errors.Should().Contain(e => e.PropertyName == "Email" && e.ErrorMessage == "NieprawidÅ‚owy format adresu email.");
         }
 
         [Fact]
@@ -163,14 +163,14 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
         {
             // Arrange
             var command = CreateValidCommand();
-            command.Email = new string('a', 250) + "@test.com"; // > 255 znaków
+            command.Email = new string('a', 250) + "@test.com"; // > 255 znakÃ³w
 
             // Act
             var result = _validator.Validate(command);
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Email" && e.ErrorMessage == "Email nie mo¿e przekraczaæ 255 znaków.");
+            result.Errors.Should().Contain(e => e.PropertyName == "Email" && e.ErrorMessage == "Email nie moÅ¼e przekraczaÄ‡ 255 znakÃ³w.");
         }
 
         #endregion
@@ -206,7 +206,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "Has³o jest wymagane.");
+            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "HasÅ‚o jest wymagane.");
         }
 
         [Fact]
@@ -214,14 +214,14 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
         {
             // Arrange
             var command = CreateValidCommand();
-            command.Password = "Pass1!"; // 6 znaków
+            command.Password = "Pass1!"; // 6 znakÃ³w
 
             // Act
             var result = _validator.Validate(command);
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "Has³o musi zawieraæ minimum 8 znaków.");
+            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "HasÅ‚o musi zawieraÄ‡ minimum 8 znakÃ³w.");
         }
 
         [Fact]
@@ -229,14 +229,14 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
         {
             // Arrange
             var command = CreateValidCommand();
-            command.Password = new string('a', 101); // 101 znaków
+            command.Password = new string('a', 101); // 101 znakÃ³w
 
             // Act
             var result = _validator.Validate(command);
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "Has³o nie mo¿e przekraczaæ 100 znaków.");
+            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "HasÅ‚o nie moÅ¼e przekraczaÄ‡ 100 znakÃ³w.");
         }
 
         [Fact]
@@ -251,7 +251,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "Has³o musi zawieraæ przynajmniej jedn¹ wielk¹ literê.");
+            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "HasÅ‚o musi zawieraÄ‡ przynajmniej jednÄ… wielkÄ… literÄ™.");
         }
 
         [Fact]
@@ -266,7 +266,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "Has³o musi zawieraæ przynajmniej jedn¹ ma³¹ literê.");
+            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "HasÅ‚o musi zawieraÄ‡ przynajmniej jednÄ… maÅ‚Ä… literÄ™.");
         }
 
         [Fact]
@@ -281,7 +281,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "Has³o musi zawieraæ przynajmniej jedn¹ cyfrê.");
+            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "HasÅ‚o musi zawieraÄ‡ przynajmniej jednÄ… cyfrÄ™.");
         }
 
         [Fact]
@@ -296,7 +296,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "Has³o musi zawieraæ przynajmniej jeden znak specjalny.");
+            result.Errors.Should().Contain(e => e.PropertyName == "Password" && e.ErrorMessage == "HasÅ‚o musi zawieraÄ‡ przynajmniej jeden znak specjalny.");
         }
 
         #endregion
@@ -348,7 +348,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "PhoneNumber" && e.ErrorMessage == "Numer telefonu mo¿e zawieraæ tylko cyfry, spacje, myœlniki, plus i nawiasy.");
+            result.Errors.Should().Contain(e => e.PropertyName == "PhoneNumber" && e.ErrorMessage == "Numer telefonu moÅ¼e zawieraÄ‡ tylko cyfry, spacje, myÅ›lniki, plus i nawiasy.");
         }
 
         [Fact]
@@ -356,14 +356,14 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
         {
             // Arrange
             var command = CreateValidCommand();
-            command.PhoneNumber = "12345678"; // 8 znaków
+            command.PhoneNumber = "12345678"; // 8 znakÃ³w
 
             // Act
             var result = _validator.Validate(command);
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "PhoneNumber" && e.ErrorMessage == "Numer telefonu musi zawieraæ od 9 do 20 znaków.");
+            result.Errors.Should().Contain(e => e.PropertyName == "PhoneNumber" && e.ErrorMessage == "Numer telefonu musi zawieraÄ‡ od 9 do 20 znakÃ³w.");
         }
 
         [Fact]
@@ -371,14 +371,14 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
         {
             // Arrange
             var command = CreateValidCommand();
-            command.PhoneNumber = new string('1', 21); // 21 znaków
+            command.PhoneNumber = new string('1', 21); // 21 znakÃ³w
 
             // Act
             var result = _validator.Validate(command);
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "PhoneNumber" && e.ErrorMessage == "Numer telefonu musi zawieraæ od 9 do 20 znaków.");
+            result.Errors.Should().Contain(e => e.PropertyName == "PhoneNumber" && e.ErrorMessage == "Numer telefonu musi zawieraÄ‡ od 9 do 20 znakÃ³w.");
         }
 
         #endregion
@@ -411,7 +411,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "BirthDate" && e.ErrorMessage == "Data urodzenia musi byæ dat¹ z przesz³oœci.");
+            result.Errors.Should().Contain(e => e.PropertyName == "BirthDate" && e.ErrorMessage == "Data urodzenia musi byÄ‡ datÄ… z przeszÅ‚oÅ›ci.");
         }
 
         [Fact]
@@ -426,7 +426,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "BirthDate" && e.ErrorMessage == "Data urodzenia nie mo¿e byæ starsza ni¿ 150 lat.");
+            result.Errors.Should().Contain(e => e.PropertyName == "BirthDate" && e.ErrorMessage == "Data urodzenia nie moÅ¼e byÄ‡ starsza niÅ¼ 150 lat.");
         }
 
         #endregion
@@ -473,7 +473,7 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "SubcategoryId" && e.ErrorMessage == "Podkategoria musi mieæ prawid³ow¹ wartoœæ.");
+            result.Errors.Should().Contain(e => e.PropertyName == "SubcategoryId" && e.ErrorMessage == "Podkategoria musi mieÄ‡ prawidÅ‚owÄ… wartoÅ›Ä‡.");
         }
 
         #endregion
@@ -520,13 +520,13 @@ namespace NetPcContacts.Application.Tests.Contacts.Commands.CreateContact
 
             // Assert
             result.IsValid.Should().BeFalse();
-            result.Errors.Should().Contain(e => e.PropertyName == "CustomSubcategory" && e.ErrorMessage == "Niestandardowa podkategoria nie mo¿e przekraczaæ 100 znaków.");
+            result.Errors.Should().Contain(e => e.PropertyName == "CustomSubcategory" && e.ErrorMessage == "Niestandardowa podkategoria nie moÅ¼e przekraczaÄ‡ 100 znakÃ³w.");
         }
 
         #endregion
 
         /// <summary>
-        /// Tworzy poprawn¹ komendê CreateContactCommand do testów.
+        /// Tworzy poprawnÄ… komendÄ™ CreateContactCommand do testÃ³w.
         /// </summary>
         private static CreateContactCommand CreateValidCommand()
         {

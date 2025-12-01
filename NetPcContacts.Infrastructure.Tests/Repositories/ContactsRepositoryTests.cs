@@ -9,7 +9,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
 {
     /// <summary>
     /// Testy jednostkowe dla ContactsRepository.
-    /// U�ywaj� InMemory Database do testowania operacji na bazie danych.
+    /// Używają InMemory Database do testowania operacji na bazie danych.
     /// </summary>
     public class ContactsRepositoryTests : IDisposable
     {
@@ -19,7 +19,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public ContactsRepositoryTests()
         {
             var options = new DbContextOptionsBuilder<NetPcContactsDbContext>()
-                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // Unikalny DB dla ka�dego testu
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString()) // Unikalny DB dla każdego testu
                 .Options;
 
             _dbContext = new NetPcContactsDbContext(options);
@@ -37,7 +37,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task Create_AddsContactToDatabase_ReturnsGeneratedId()
         {
             // Arrange
-            var category = new Category { CategoryName = "S�u�bowy" };
+            var category = new Category { CategoryName = "Służbowy" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
@@ -123,7 +123,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
             var contact = new Contact
             {
                 Name = "Piotr",
-                Surname = "Wi�niewski",
+                Surname = "Wiśniewski",
                 Email = "piotr.wisniewski@example.com",
                 PasswordHash = "hashed_password",
                 PhoneNumber = "+48 111 222 333",
@@ -139,7 +139,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
             // Assert
             result.Should().NotBeNull();
             result!.Name.Should().Be("Piotr");
-            result.Surname.Should().Be("Wi�niewski");
+            result.Surname.Should().Be("Wiśniewski");
         }
 
         [Fact]
@@ -160,7 +160,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task EmailExists_ForExistingEmail_ReturnsTrue()
         {
             // Arrange
-            var category = new Category { CategoryName = "S�u�bowy" };
+            var category = new Category { CategoryName = "Służbowy" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
@@ -202,7 +202,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task GetAll_ReturnsAllContactsWithRelations()
         {
             // Arrange
-            var category1 = new Category { CategoryName = "S�u�bowy" };
+            var category1 = new Category { CategoryName = "Służbowy" };
             var category2 = new Category { CategoryName = "Prywatny" };
             await _dbContext.Categories.AddRangeAsync(category1, category2);
             await _dbContext.SaveChangesAsync();
@@ -250,7 +250,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task Delete_RemovesContactFromDatabase()
         {
             // Arrange
-            var category = new Category { CategoryName = "S�u�bowy" };
+            var category = new Category { CategoryName = "Służbowy" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
@@ -290,7 +290,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
             var contact = new Contact
             {
                 Name = "Krzysztof",
-                Surname = "Wo�niak",
+                Surname = "Woźniak",
                 Email = "krzysztof@example.com",
                 PasswordHash = "hash",
                 PhoneNumber = "111222333",
@@ -322,7 +322,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task GetAllMatchingAsync_WithSearchPhrase_ReturnsMatchingContacts()
         {
             // Arrange
-            var category = new Category { CategoryName = "S�u�bowy" };
+            var category = new Category { CategoryName = "Służbowy" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
@@ -380,7 +380,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task GetAllMatchingAsync_WithSorting_ReturnsSortedResults()
         {
             // Arrange
-            var category = new Category { CategoryName = "S�u�bowy" };
+            var category = new Category { CategoryName = "Służbowy" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
@@ -393,7 +393,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
             await _dbContext.Contacts.AddRangeAsync(contacts);
             await _dbContext.SaveChangesAsync();
 
-            // Act - sortowanie rosn�co po FirstName
+            // Act - sortowanie rosnąco po FirstName
             var (resultAsc, _) = await _repository.GetAllMatchingAsync(null, 10, 1, "Name", SortDirection.Ascending);
 
             // Assert
@@ -420,7 +420,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
             await _dbContext.Contacts.AddRangeAsync(contacts);
             await _dbContext.SaveChangesAsync();
 
-            // Act - sortowanie malej�co po LastName
+            // Act - sortowanie malejąco po LastName
             var (resultDesc, _) = await _repository.GetAllMatchingAsync(null, 10, 1, "Surname", SortDirection.Descending);
 
             // Assert

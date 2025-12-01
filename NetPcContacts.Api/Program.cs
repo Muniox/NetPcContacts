@@ -1,5 +1,4 @@
 using NetPcContacts.Api.Extensions;
-using NetPcContacts.Api.Middlewares;
 using NetPcContacts.Application.Extensions;
 using NetPcContacts.Domain.Entities;
 using NetPcContacts.Infrastructure.Extensions;
@@ -29,8 +28,8 @@ public class Program
         var seeder = scope.ServiceProvider.GetRequiredService<IApplicationSeeder>();
         await seeder.Seed();
 
-        // Middlewares
-        app.UseMiddleware<ErrorHandlingMiddleware>();
+        // Exception handling
+        app.UseExceptionHandler();
 
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -49,7 +48,7 @@ public class Program
 
         app.UseCors("CorsPolicy");
 
-        // WA¯NE: UseRateLimiter PRZED Authentication i Authorization
+        // WAï¿½NE: UseRateLimiter PRZED Authentication i Authorization
         app.UseRateLimiter();
 
         app.UseAuthentication();
