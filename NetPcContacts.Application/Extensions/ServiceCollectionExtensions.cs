@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using Mediator;
 using Microsoft.Extensions.DependencyInjection;
 using NetPcContacts.Application.Behaviors;
 
@@ -10,11 +11,13 @@ public static class ServiceCollectionExtensions
     {
         var applicationAssembly = typeof(ServiceCollectionExtensions).Assembly;
         
-        services.AddMediatR(cfg =>
+        services.AddMediator(options =>
         {
-            cfg.RegisterServicesFromAssembly(applicationAssembly);
-            cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
+            options.ServiceLifetime = ServiceLifetime.Scoped;
         });
+        
+        // Rejestracja pipeline behavior dla walidacji
+        services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
         services.AddValidatorsFromAssembly(applicationAssembly);
     }

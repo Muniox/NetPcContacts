@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Mediator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using NetPcContacts.Domain.Entities;
@@ -9,10 +9,10 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
 {
     /// <summary>
     /// Handler obsługujący komendę tworzenia nowego kontaktu.
-    /// Implementuje wzorzec CQRS poprzez MediatR.
+    /// Implementuje wzorzec CQRS poprzez Mediator.
     /// Wykonuje walidację biznesową, hashowanie hasła oraz zapis do bazy danych.
     /// </summary>
-    public class CreateContactCommandHandler : IRequestHandler<CreateContactCommand, int>
+    public class CreateContactCommandHandler : ICommandHandler<CreateContactCommand, int>
     {
         private readonly ILogger<CreateContactCommandHandler> _logger;
         private readonly IContactsRepository _contactsRepository;
@@ -45,7 +45,7 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
         /// Obsługuje komendę CreateContactCommand.
         /// Przeprowadza pełną walidację biznesową i tworzy nowy kontakt w bazie.
         /// </summary>
-        /// <param name="request">Komenda zawierająca dane nowego kontaktu</param>
+        /// <param name="command">Komenda zawierająca dane nowego kontaktu</param>
         /// <param name="cancellationToken">Token anulowania operacji</param>
         /// <returns>ID utworzonego kontaktu</returns>
         /// <exception cref="InvalidOperationException">
@@ -54,38 +54,38 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
         /// - CategoryId nie istnieje
         /// - SubcategoryId nie istnieje lub nie należy do CategoryId
         /// </exception>
-        public async Task<int> Handle(CreateContactCommand request, CancellationToken cancellationToken)
+        public async ValueTask<int> Handle(CreateContactCommand command, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Creating new contact with email: {Email}", request.Email);
+            _logger.LogInformation("Creating new contact with email: {Email}", command.Email);
             // KROK 1: Walidacja unikalności emaila
             // Email musi być unikalny w całym systemie (wymaganie z task.md)
-            var emailExists = await _contactsRepository.EmailExists(request.Email);
+            var emailExists = await _contactsRepository.EmailExists(command.Email);
             if (emailExists)
             {
-                throw new DuplicateEmailException(request.Email);
+                throw new DuplicateEmailException(command.Email);
             }
 
             // KROK 2: Walidacja istnienia kategorii
             // CategoryId musi wskazywać na istniejący rekord w tabeli Categories
-            var categoryExists = await _categoryRepository.Exists(request.CategoryId);
+            var categoryExists = await _categoryRepository.Exists(command.CategoryId);
             if (!categoryExists)
             {
-                throw new NotFoundException(nameof(request.CategoryId), request.CategoryId.ToString());
+                throw new NotFoundException(nameof(command.CategoryId), command.CategoryId.ToString());
             }
 
             // KROK 3: Walidacja podkategorii (jeśli podana)
             // SubcategoryId musi:
             // - istnieć w tabeli Subcategories
             // - należeć do kategorii wskazanej przez CategoryId
-            if (request.SubcategoryId.HasValue)
+            if (command.SubcategoryId.HasValue)
             {
                 var subcategoryValid = await _subcategoryRepository.ExistsForCategory(
-                    request.SubcategoryId.Value,
-                    request.CategoryId);
+                    command.SubcategoryId.Value,
+                    command.CategoryId);
 
                 if (!subcategoryValid)
                 {
-                    throw new NotFoundException(nameof(request.SubcategoryId), request.SubcategoryId.Value.ToString());
+                    throw new NotFoundException(nameof(command.SubcategoryId), command.SubcategoryId.Value.ToString());
                 }
             }
 
@@ -94,18 +94,18 @@ namespace NetPcContacts.Application.Contacts.Commands.CreateContact
             // Używamy IPasswordHasher<Contact> z ASP.NET Core Identity
             var contact = new Contact
             {
-                Name = request.Name,
-                Surname = request.Surname,
-                Email = request.Email,
-                PhoneNumber = request.PhoneNumber,
-                BirthDate = request.BirthDate,
-                CategoryId = request.CategoryId,
-                SubcategoryId = request.SubcategoryId,
-                CustomSubcategory = request.CustomSubcategory
+                Name = command.Name,
+                Surname = command.Surname,
+                Email = command.Email,
+                PhoneNumber = command.PhoneNumber,
+                BirthDate = command.BirthDate,
+                CategoryId = command.CategoryId,
+                SubcategoryId = command.SubcategoryId,
+                CustomSubcategory = command.CustomSubcategory
             };
 
             // Hash hasła używając wbudowanego algorytmu Identity (PBKDF2 z solą)
-            contact.PasswordHash = _passwordHasher.HashPassword(contact, request.Password);
+            contact.PasswordHash = _passwordHasher.HashPassword(contact, command.Password);
 
             // KROK 5: Zapis do bazy danych
             // Repository wywołuje SaveChangesAsync wewnątrz metody Create

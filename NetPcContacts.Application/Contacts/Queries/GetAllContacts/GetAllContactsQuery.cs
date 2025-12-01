@@ -1,11 +1,11 @@
-﻿using MediatR;
+﻿using Mediator;
 using NetPcContacts.Application.Common;
 using NetPcContacts.Application.Contacts.Dtos;
 using NetPcContacts.Domain.Constants;
 
 namespace NetPcContacts.Application.Contacts.Queries.GetAllContacts
 {
-    public class GetAllContactsQuery : IRequest<PagedResult<BasicContactDto>>
+    public class GetAllContactsQuery : IQuery<PagedResult<BasicContactDto>>
     {
         public string? SearchPhrase { get; set; }
         public int PageNumber { get; set; }

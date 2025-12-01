@@ -1,5 +1,5 @@
 using FluentAssertions;
-using MediatR;
+using Mediator;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NetPcContacts.Api.Controllers;
@@ -16,7 +16,7 @@ namespace NetPcContacts.Api.Tests.Controllers
 {
     /// <summary>
     /// Testy jednostkowe dla ContactController.
-    /// Testują poprawność obsługi żądań HTTP i komunikację z MediatR.
+    /// Testują poprawność obsługi żądań HTTP i komunikację z Mediator.
     /// </summary>
     public class ContactControllerTests
     {
@@ -114,7 +114,7 @@ namespace NetPcContacts.Api.Tests.Controllers
             };
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateContactCommand>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(Unit.Value));
+                .Returns(new ValueTask<Unit>(Unit.Value));
 
             // Act
             var result = await _controller.UpdateContact(contactId, dto);
@@ -142,7 +142,7 @@ namespace NetPcContacts.Api.Tests.Controllers
             };
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateContactCommand>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(Unit.Value));
+                .Returns(new ValueTask<Unit>(Unit.Value));
 
             // Act
             await _controller.UpdateContact(contactId, dto);
@@ -181,7 +181,7 @@ namespace NetPcContacts.Api.Tests.Controllers
             };
 
             _mediatorMock.Setup(m => m.Send(It.IsAny<UpdateContactCommand>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(Unit.Value));
+                .Returns(new ValueTask<Unit>(Unit.Value));
 
             // Act
             await _controller.UpdateContact(contactId, dto);
@@ -241,7 +241,7 @@ namespace NetPcContacts.Api.Tests.Controllers
             // Arrange
             var contactId = 3;
             _mediatorMock.Setup(m => m.Send(It.IsAny<DeleteContactCommand>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(Unit.Value));
+                .Returns(new ValueTask<Unit>(Unit.Value));
 
             // Act
             var result = await _controller.DeleteContact(contactId);
@@ -256,7 +256,7 @@ namespace NetPcContacts.Api.Tests.Controllers
             // Arrange
             var contactId = 7;
             _mediatorMock.Setup(m => m.Send(It.IsAny<DeleteContactCommand>(), It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(Unit.Value));
+                .Returns(new ValueTask<Unit>(Unit.Value));
 
             // Act
             await _controller.DeleteContact(contactId);

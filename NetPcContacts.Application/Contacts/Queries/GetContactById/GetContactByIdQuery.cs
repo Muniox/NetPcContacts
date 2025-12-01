@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Mediator;
 using NetPcContacts.Application.Contacts.Dtos;
 
 namespace NetPcContacts.Application.Contacts.Queries.GetContactById
@@ -7,7 +7,7 @@ namespace NetPcContacts.Application.Contacts.Queries.GetContactById
     /// Query do pobrania pojedynczego kontaktu po ID.
     /// Zwraca ContactDto z pełnymi danymi kontaktu (bez hasła).
     /// </summary>
-    public class GetContactByIdQuery(int contactId) : IRequest<ContactDto>
+    public class GetContactByIdQuery(int contactId) : IQuery<ContactDto?>
     {
         /// <summary>
         /// ID kontaktu do pobrania.
