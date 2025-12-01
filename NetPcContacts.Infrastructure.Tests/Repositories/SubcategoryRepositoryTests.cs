@@ -8,7 +8,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
 {
     /// <summary>
     /// Testy jednostkowe dla SubcategoryRepository.
-    /// Uøywajπ InMemory Database do testowania operacji na podkategoriach.
+    /// U≈ºywajƒÖ InMemory Database do testowania operacji na podkategoriach.
     /// </summary>
     public class SubcategoryRepositoryTests : IDisposable
     {
@@ -36,7 +36,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task Create_AddsSubcategoryToDatabase_ReturnsGeneratedId()
         {
             // Arrange
-            var category = new Category { CategoryName = "S≥uøbowy" };
+            var category = new Category { CategoryName = "S≈Çu≈ºbowy" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
@@ -65,7 +65,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task ExistsForCategory_ForValidSubcategoryAndCategory_ReturnsTrue()
         {
             // Arrange
-            var category = new Category { CategoryName = "S≥uøbowy" };
+            var category = new Category { CategoryName = "S≈Çu≈ºbowy" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
@@ -88,7 +88,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task ExistsForCategory_ForNonExistingSubcategory_ReturnsFalse()
         {
             // Arrange
-            var category = new Category { CategoryName = "S≥uøbowy" };
+            var category = new Category { CategoryName = "S≈Çu≈ºbowy" };
             await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
@@ -103,7 +103,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task ExistsForCategory_ForSubcategoryNotBelongingToCategory_ReturnsFalse()
         {
             // Arrange
-            var category1 = new Category { CategoryName = "S≥uøbowy" };
+            var category1 = new Category { CategoryName = "S≈Çu≈ºbowy" };
             var category2 = new Category { CategoryName = "Prywatny" };
             await _dbContext.Categories.AddRangeAsync(category1, category2);
             await _dbContext.SaveChangesAsync();
@@ -111,12 +111,12 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
             var subcategory = new Subcategory
             {
                 SubcategoryName = "Szef",
-                CategoryId = category1.Id // naleøy do category1
+                CategoryId = category1.Id // nale≈ºy do category1
             };
             await _dbContext.Subcategories.AddAsync(subcategory);
             await _dbContext.SaveChangesAsync();
 
-            // Act - sprawdzamy czy naleøy do category2
+            // Act - sprawdzamy czy nale≈ºy do category2
             var exists = await _repository.ExistsForCategory(subcategory.Id, category2.Id);
 
             // Assert
@@ -131,7 +131,7 @@ namespace NetPcContacts.Infrastructure.Tests.Repositories
         public async Task GetByCategoryId_ReturnsAllSubcategoriesForCategory()
         {
             // Arrange
-            var category1 = new Category { CategoryName = "S≥uøbowy" };
+            var category1 = new Category { CategoryName = "S≈Çu≈ºbowy" };
             var category2 = new Category { CategoryName = "Prywatny" };
             await _dbContext.Categories.AddRangeAsync(category1, category2);
             await _dbContext.SaveChangesAsync();

@@ -37,7 +37,7 @@ The project follows Clean Architecture with four main layers:
 ### Presentation Layer (`NetPcContacts.Api`)
 - ASP.NET Core Web API controllers
 - Swagger/OpenAPI with XML documentation
-- Custom middlewares (`ErrorHandlingMiddleware`)
+- Global exception handling using `IExceptionHandler` with ProblemDetails
 - Rate limiting with multiple policies (auth, commands, queries)
 - CORS configuration (allowing Angular UI origin)
 - Bearer token authentication (1 minute expiration)
@@ -179,11 +179,15 @@ ng test
 - Pattern: Controller receives DTO → maps to Command → sets Id from route → sends to MediatR
 
 #### Error Handling
-- Custom `ErrorHandlingMiddleware` catches all exceptions
+- Global exception handler using `IExceptionHandler` pattern (`GlobalExceptionHandler`)
+- Returns standardized ProblemDetails responses with `requestId` in extensions
 - Domain exceptions in `NetPcContacts.Domain/Exceptions/`
-- Validation errors return 400 Bad Request
-- Not found errors return 404 Not Found
-- Conflict errors (e.g., duplicate email) return 409 Conflict
+- Exception to status code mapping:
+  - `ValidationException` → 400 Bad Request
+  - `NotFoundException` → 404 Not Found
+  - `DuplicateEmailException` → 409 Conflict
+  - All other exceptions → 500 Internal Server Error
+- Comprehensive logging with user context (userId, IP, endpoint, timestamp)
 
 #### XML Documentation
 - API project generates XML documentation file for Swagger

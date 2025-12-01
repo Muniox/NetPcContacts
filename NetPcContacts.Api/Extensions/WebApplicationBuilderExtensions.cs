@@ -1,9 +1,11 @@
 ﻿using System.Collections;
+using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.OpenApi.Models;
-using NetPcContacts.Api.Middlewares;
+using NetPcContacts.Api.ExceptionHandlers;
 using System.Reflection;
 using System.Threading.RateLimiting;
+using NetPcContacts.Domain.Entities;
 
 namespace NetPcContacts.Api.Extensions
 {
@@ -17,6 +19,14 @@ namespace NetPcContacts.Api.Extensions
         /// </summary>
         public static void AddPresentation(this WebApplicationBuilder builder)
         {
+            // Identity API Endpoints
+            builder.Services.AddIdentityCore<User>()
+                .AddApiEndpoints();
+
+            // Konfiguracja Bearer Token - domyślnie wygasa po 1h, zmieniamy na 1 min
+            builder.Services.ConfigureAll<BearerTokenOptions>(option => 
+                option.BearerTokenExpiration = TimeSpan.FromMinutes(1));
+
             // Authentication & Authorization
             builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerScheme);
             builder.Services.AddAuthorization();
@@ -168,8 +178,15 @@ namespace NetPcContacts.Api.Extensions
                 };
             });
 
-            // Middlewares
-            builder.Services.AddScoped<ErrorHandlingMiddleware>();
+            // Exception Handling
+            builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+            builder.Services.AddProblemDetails(options =>
+            {
+                options.CustomizeProblemDetails = context =>
+                {
+                    context.ProblemDetails.Extensions.TryAdd("requestId", context.HttpContext.TraceIdentifier);
+                };
+            });
         }
     }
 }
