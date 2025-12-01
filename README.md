@@ -62,7 +62,7 @@ The project follows Clean Architecture with four main layers:
 **Dependencies**: None (except ASP.NET Core Identity for User entity)
 
 ### 2. Application Layer (`NetPcContacts.Application`)
-**Purpose**: Implements business logic using CQRS pattern with MediatR
+**Purpose**: Implements business logic using CQRS pattern with Mediator (source generator-based)
 
 **Commands** (`Contacts/Commands/`):
 
@@ -227,7 +227,7 @@ The project follows Clean Architecture with four main layers:
 - Bearer token authentication
 
 **CQRS & Validation**:
-- MediatR 12.5.0 - CQRS implementation
+- Mediator 3.0.* - High-performance source generator-based CQRS implementation
 - FluentValidation.AspNetCore 11.3.1 - Input validation with ASP.NET Core integration
 
 **API Documentation**:

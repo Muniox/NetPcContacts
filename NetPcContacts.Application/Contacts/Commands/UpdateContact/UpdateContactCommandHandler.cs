@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿using Mediator;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using NetPcContacts.Domain.Entities;
@@ -9,10 +9,10 @@ namespace NetPcContacts.Application.Contacts.Commands.UpdateContact
 {
     /// <summary>
     /// Handler obsługujący komendę aktualizacji kontaktu.
-    /// Implementuje wzorzec CQRS poprzez MediatR.
+    /// Implementuje wzorzec CQRS poprzez Mediator.
     /// Wykonuje walidację biznesową oraz aktualizację danych w bazie.
     /// </summary>
-    public class UpdateContactCommandHandler : IRequestHandler<UpdateContactCommand>
+    public class UpdateContactCommandHandler : ICommandHandler<UpdateContactCommand>
     {
         private readonly IContactsRepository _contactsRepository;
         private readonly ICategoryRepository _categoryRepository;
@@ -46,84 +46,86 @@ namespace NetPcContacts.Application.Contacts.Commands.UpdateContact
         /// Obsługuje komendę UpdateContactCommand.
         /// Przeprowadza pełną walidację biznesową i aktualizuje kontakt w bazie.
         /// </summary>
-        /// <param name="request">Komenda zawierająca dane do aktualizacji kontaktu</param>
+        /// <param name="command">Komenda zawierająca dane do aktualizacji kontaktu</param>
         /// <param name="cancellationToken">Token anulowania operacji</param>
         /// <exception cref="NotFoundException">Rzucany gdy kontakt, kategoria lub podkategoria nie istnieją</exception>
         /// <exception cref="DuplicateEmailException">Rzucany gdy email jest już używany przez inny kontakt</exception>
-        public async Task Handle(UpdateContactCommand request, CancellationToken cancellationToken)
+        public async ValueTask<Unit> Handle(UpdateContactCommand command, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Updating contact: {ContactId}", request.Id);
+            _logger.LogInformation("Updating contact: {ContactId}", command.Id);
 
             // KROK 1: Sprawdź czy kontakt istnieje
-            var contact = await _contactsRepository.GetById(request.Id);
+            var contact = await _contactsRepository.GetById(command.Id);
             if (contact == null)
             {
-                _logger.LogWarning("Contact not found: {ContactId}", request.Id);
-                throw new NotFoundException(nameof(contact), request.Id.ToString());
+                _logger.LogWarning("Contact not found: {ContactId}", command.Id);
+                throw new NotFoundException(nameof(contact), command.Id.ToString());
             }
 
             // KROK 2: Walidacja unikalności emaila (jeśli email się zmienił)
             // Email musi być unikalny w całym systemie, ale dozwolone jest pozostawienie obecnego emaila
-            if (contact.Email != request.Email)
+            if (contact.Email != command.Email)
             {
-                var emailExists = await _contactsRepository.EmailExists(request.Email);
+                var emailExists = await _contactsRepository.EmailExists(command.Email);
                 if (emailExists)
                 {
-                    _logger.LogWarning("Email already exists: {Email}", request.Email);
-                    throw new DuplicateEmailException(request.Email);
+                    _logger.LogWarning("Email already exists: {Email}", command.Email);
+                    throw new DuplicateEmailException(command.Email);
                 }
             }
 
             // KROK 3: Walidacja istnienia kategorii
             // CategoryId musi wskazywać na istniejący rekord w tabeli Categories
-            var categoryExists = await _categoryRepository.Exists(request.CategoryId);
+            var categoryExists = await _categoryRepository.Exists(command.CategoryId);
             if (!categoryExists)
             {
-                _logger.LogWarning("Category not found: {CategoryId}", request.CategoryId);
-                throw new NotFoundException(nameof(request.CategoryId), request.CategoryId.ToString());
+                _logger.LogWarning("Category not found: {CategoryId}", command.CategoryId);
+                throw new NotFoundException(nameof(command.CategoryId), command.CategoryId.ToString());
             }
 
             // KROK 4: Walidacja podkategorii (jeśli podana)
             // SubcategoryId musi:
             // - istnieć w tabeli Subcategories
             // - należeć do kategorii wskazanej przez CategoryId
-            if (request.SubcategoryId.HasValue)
+            if (command.SubcategoryId.HasValue)
             {
                 var subcategoryValid = await _subcategoryRepository.ExistsForCategory(
-                    request.SubcategoryId.Value,
-                    request.CategoryId);
+                    command.SubcategoryId.Value,
+                    command.CategoryId);
 
                 if (!subcategoryValid)
                 {
                     _logger.LogWarning("Subcategory not found or doesn't belong to category: SubcategoryId={SubcategoryId}, CategoryId={CategoryId}",
-                        request.SubcategoryId.Value, request.CategoryId);
-                    throw new NotFoundException(nameof(request.SubcategoryId), request.SubcategoryId.Value.ToString());
+                        command.SubcategoryId.Value, command.CategoryId);
+                    throw new NotFoundException(nameof(command.SubcategoryId), command.SubcategoryId.Value.ToString());
                 }
             }
 
             // KROK 5: Aktualizacja danych kontaktu
-            contact.Name = request.Name;
-            contact.Surname = request.Surname;
-            contact.Email = request.Email;
-            contact.PhoneNumber = request.PhoneNumber;
-            contact.BirthDate = request.BirthDate;
-            contact.CategoryId = request.CategoryId;
-            contact.SubcategoryId = request.SubcategoryId;
-            contact.CustomSubcategory = request.CustomSubcategory;
+            contact.Name = command.Name;
+            contact.Surname = command.Surname;
+            contact.Email = command.Email;
+            contact.PhoneNumber = command.PhoneNumber;
+            contact.BirthDate = command.BirthDate;
+            contact.CategoryId = command.CategoryId;
+            contact.SubcategoryId = command.SubcategoryId;
+            contact.CustomSubcategory = command.CustomSubcategory;
 
             // KROK 6: Aktualizacja hasła (jeśli podane)
             // NIGDY nie przechowujemy haseł w postaci jawnej!
             // Hashujemy hasło tylko jeśli zostało podane nowe hasło
-            if (!string.IsNullOrWhiteSpace(request.Password))
+            if (!string.IsNullOrWhiteSpace(command.Password))
             {
-                contact.PasswordHash = _passwordHasher.HashPassword(contact, request.Password);
-                _logger.LogInformation("Password updated for contact: {ContactId}", request.Id);
+                contact.PasswordHash = _passwordHasher.HashPassword(contact, command.Password);
+                _logger.LogInformation("Password updated for contact: {ContactId}", command.Id);
             }
 
             // KROK 7: Zapis zmian do bazy danych
             await _contactsRepository.SaveChanges();
 
-            _logger.LogInformation("Contact updated successfully: {ContactId}", request.Id);
+            _logger.LogInformation("Contact updated successfully: {ContactId}", command.Id);
+            
+            return Unit.Value;
         }
     }
 }
